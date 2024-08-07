@@ -22,38 +22,33 @@ def get_videos(start_id:int=0) -> None:
         "Connection": "keep-alive",
     }
 
-    url = "https://cdn-13-go.toya.net.pl/kamery/krak_centrumkongresowe_0"
 
     i = start_id
+
     for _ in range(100):
-        addition = ""
+        url = "https://cdn-13-go.toya.net.pl/kamery/krak_centrumkongresowe_0"
+
+        print(f"Part {i} done")
+
         x = f"{i}"
         for _ in range(2, len(x), -1):
-            addition += "0"
-        addition += x
-        addition += ".ts"
-
-        url += addition
+            url += "0"
+        url += x
+        url += ".ts"
 
         with open(f"curr_vid/v{i}.ts", 'wb') as f:
             r = requests.get(url, headers=headers)
             f.write(r.content)
-            # subprocess.run(['ffmpeg', '-i', f'curr_vid/v{i}.ts', f'curr_vid/v{i}.mp4'])
+            subprocess.run(['ffmpeg', '-i', f'curr_vid/v{i}.ts', f'curr_vid/v{i}.mp4'])
 
-        # os.remove(f"curr_vid/v{i}.ts")
+        os.remove(f"curr_vid/v{i}.ts")
 
 
         i += 1
         if i == 100:
             i = 0
-    #
-    # return None
 
-    # with open(f"curr_vid/v{0}.ts", 'wb') as f:
-    #     r = requests.get("https://cdn-13-go.toya.net.pl/kamery/krak_centrumkongresowe_000.ts", headers=headers)
-    #     f.write(r.content)
-        # subprocess.run(['ffmpeg', '-i', f'curr_vid/v{0}.ts', f'curr_vid/v{0}.mp4'])
-        # print(r.content)
+    return None
 
 
 get_videos(0)
