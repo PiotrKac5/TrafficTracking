@@ -5,9 +5,10 @@ import os
 def get_videos(start_id:int=0) -> None:
     """
     Downloads current video from: https://go.toya.net.pl/25-kamery/14022-krakow/444414022176-centrum-kongresowe-ice/play
-    as many 2seconds videos.
+    as many 2-seconds videos.
     Next, it converts them to mp4 files and saves in curr_vid folder
     start_id is id of first file (must be in range <0, 99>)
+    (It downloads 50 2-seconds videos)
     """
 
 
@@ -25,7 +26,7 @@ def get_videos(start_id:int=0) -> None:
 
     i = start_id
 
-    for _ in range(100):
+    for _ in range(50):
         url = "https://cdn-13-go.toya.net.pl/kamery/krak_centrumkongresowe_0"
 
         x = f"{i}"
