@@ -72,7 +72,7 @@ def connect_vid(start_id:int, ID:int):
             i = 0
 
     final_clip = concatenate_videoclips(L)
-    final_clip.to_videofile(f"videos_to_detect/test{ID}.mp4")
+    final_clip.to_videofile(f"videos_to_detect/video{ID}.mp4")
 
 
 def get_starting_point() -> int:
@@ -100,4 +100,4 @@ def get_starting_point() -> int:
 
     return start_id
 
-get_videos(0)
+# get_videos(0)
