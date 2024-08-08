@@ -1,6 +1,7 @@
 import requests
 import subprocess
 import os
+import m3u8
 from moviepy.editor import *
 
 def get_videos(start_id:int=0) -> None:
@@ -74,6 +75,29 @@ def connect_vid(start_id:int, ID:int):
     final_clip.to_videofile(f"videos_to_detect/test{ID}.mp4")
 
 
+def get_starting_point() -> int:
+    """
+    Returns the id of first ts file to be downloaded
+    """
 
+    headers = {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) "
+                      "AppleWebKit/537.11 (KHTML, like Gecko) "
+                      "Chrome/23.0.1271.64 Safari/537.11",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Charset": "ISO-8859-1,utf-8;q=0.7,*;q=0.3",
+        "Accept-Encoding": "none",
+        "Accept-Language": "en-US,en;q=0.8",
+        "Connection": "keep-alive",
+    }
+
+    url = "https://cdn-14-go.toya.net.pl/kamery/krak_centrumkongresowe.m3u8"
+
+    r = requests.get(url, headers=headers)
+    playlist = m3u8.loads(r.text)
+
+    start_id = int(playlist.data['segments'][0]['uri'][-5:-3])
+
+    return start_id
 
 get_videos(0)
