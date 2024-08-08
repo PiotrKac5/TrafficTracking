@@ -7,7 +7,7 @@ def get_videos(start_id:int=0) -> None:
     Downloads current video from: https://go.toya.net.pl/25-kamery/14022-krakow/444414022176-centrum-kongresowe-ice/play
     as many 2seconds videos.
     Next, it converts them to mp4 files and saves in curr_vid folder
-    stard_id is id of first file (must be in range <0, 99>)
+    start_id is id of first file (must be in range <0, 99>)
     """
 
 
@@ -28,8 +28,6 @@ def get_videos(start_id:int=0) -> None:
     for _ in range(100):
         url = "https://cdn-13-go.toya.net.pl/kamery/krak_centrumkongresowe_0"
 
-        print(f"Part {i} done")
-
         x = f"{i}"
         for _ in range(2, len(x), -1):
             url += "0"
@@ -43,6 +41,7 @@ def get_videos(start_id:int=0) -> None:
 
         os.remove(f"curr_vid/v{i}.ts")
 
+        print(f"Ts file {i} converted")
 
         i += 1
         if i == 100:
