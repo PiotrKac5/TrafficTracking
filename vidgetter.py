@@ -1,6 +1,7 @@
 import requests
 import subprocess
 import os
+from moviepy.editor import *
 
 def get_videos(start_id:int=0) -> None:
     """
@@ -49,6 +50,30 @@ def get_videos(start_id:int=0) -> None:
             i = 0
 
     return None
+
+
+def connect_vid(start_id:int, ID:int):
+    """
+    Connects 50 videos into one (starting from the one with start_id) and saves it to file with ID
+    """
+
+    L = []
+    i = start_id
+
+    for _ in range(50):
+
+        video = VideoFileClip(f"curr_vid/v{i}.mp4")
+        L.append(video)
+        os.remove(f"curr_vid/v{i}.mp4")
+
+        i += 1
+        if i == 100:
+            i = 0
+
+    final_clip = concatenate_videoclips(L)
+    final_clip.to_videofile(f"videos_to_detect/test{ID}.mp4")
+
+
 
 
 get_videos(0)
