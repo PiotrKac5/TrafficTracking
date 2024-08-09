@@ -14,7 +14,7 @@ def getting_live_videos() -> None:
 
         last_download_time = time.time()
         get_videos(start_id=start_id)
-        connect_vid(start_id=start_id, ID=ID)
+        connect_vid(start_id=start_id, ID=ID) #this has to be on another thread working in parallel to ensure continuous video
 
         curr_time = time.time()
         while curr_time < last_download_time + 50 * 2.2:
