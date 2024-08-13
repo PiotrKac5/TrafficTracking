@@ -6,7 +6,7 @@ from moviepy.editor import *
 
 def get_videos(start_id:int=0) -> None:
     """
-    Downloads current video from: https://go.toya.net.pl/25-kamery/14022-krakow/444414022176-centrum-kongresowe-ice/play
+    Downloads current video from: https://go.toya.net.pl/25-kamery/14022-krakow/444414022167-zbigniewa-herberta-trasa-lagiewnicka/play
     as many 2-seconds videos.
     Next, it converts them to mp4 files and saves in curr_vid folder
     start_id is id of first file (must be in range <0, 99>)
@@ -29,7 +29,7 @@ def get_videos(start_id:int=0) -> None:
     i = start_id
 
     for _ in range(50):
-        url = "https://cdn-13-go.toya.net.pl/kamery/krak_centrumkongresowe_0"
+        url = "https://cdn-13-go.toya.net.pl/kamery/krak_herbertalagiewnicka_0"
 
         x = f"{i}"
         for _ in range(2, len(x), -1):
@@ -91,7 +91,7 @@ def get_starting_point() -> int:
         "Connection": "keep-alive",
     }
 
-    url = "https://cdn-14-go.toya.net.pl/kamery/krak_centrumkongresowe.m3u8"
+    url = "https://cdn-14-go.toya.net.pl/kamery/krak_herbertalagiewnicka.m3u8"
 
     r = requests.get(url, headers=headers)
     playlist = m3u8.loads(r.text)
