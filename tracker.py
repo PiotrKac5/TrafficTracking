@@ -47,43 +47,44 @@ def track(path: str="videos_to_detect/video0.mp4"):
 
     ID = int(path[-5])
 
+    classNames = [
+        "person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat",
+        "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",
+        "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella",
+        "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball", "kite", "baseball bat",
+        "baseball glove", "skateboard", "surfboard", "tennis racket", "bottle", "wine glass", "cup",
+        "fork", "knife", "spoon", "bowl", "banana", "apple", "sandwich", "orange", "broccoli",
+        "carrot", "hot dog", "pizza", "donut", "cake", "chair", "sofa", "pottedplant", "bed",
+        "diningtable", "toilet", "tvmonitor", "laptop", "mouse", "remote", "keyboard", "cell phone",
+        "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors",
+        "teddy bear", "hair drier", "toothbrush"
+    ]
+
+    tracker = Sort(max_age=500, min_hits=5,
+                   iou_threshold=0.3)  # max_age is so large, because in case of traffic cars will be moving slowly
+
+    totalCount = set()
+
+    car_mask = cv2.imread("masks/car_mask.png")
+
+    limits = [[20, 393, 126, 450], [341, 345, 501, 272], [410, 476, 666, 592], [693, 230, 871, 291],
+              [1027, 450, 1092, 358], [1092, 317, 1141, 274], [1150, 608, 1208, 703]]
+
     while True:
         curr_path = path[:-5] + str(ID) + path[-4:]
 
         while not os.path.exists(f"videos_to_detect/ready{ID}.txt"):
             time.sleep(2)
-            print("File not detected")
+            # print("File not detected")
 
         os.remove(f"videos_to_detect/ready{ID}.txt")
 
         cap = cv2.VideoCapture(curr_path)
 
-        classNames = [
-            "person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat",
-            "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",
-            "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella",
-            "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball", "kite", "baseball bat",
-            "baseball glove", "skateboard", "surfboard", "tennis racket", "bottle", "wine glass", "cup",
-            "fork", "knife", "spoon", "bowl", "banana", "apple", "sandwich", "orange", "broccoli",
-            "carrot", "hot dog", "pizza", "donut", "cake", "chair", "sofa", "pottedplant", "bed",
-            "diningtable", "toilet", "tvmonitor", "laptop", "mouse", "remote", "keyboard", "cell phone",
-            "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors",
-            "teddy bear", "hair drier", "toothbrush"
-        ]
-
-        tracker = Sort(max_age=500, min_hits=5,
-                       iou_threshold=0.3)  # max_age is so large, because in case of traffic cars will be moving slowly
-
-        totalCount = set()
-
-        car_mask = cv2.imread("masks/car_mask.png")
-
-        limits = [[20, 393, 126, 450], [341, 345, 501, 272], [410, 476, 666, 592], [693, 230, 871, 291],
-                  [1027, 450, 1092, 358], [1092, 317, 1141, 274], [1150, 608, 1208, 703]]
-
         while True:
             succes, img = cap.read()
             if not succes:
+                cv2.destroyAllWindows()
                 break
 
             imgRegionCars = cv2.bitwise_and(img, car_mask)
@@ -133,7 +134,7 @@ def track(path: str="videos_to_detect/video0.mp4"):
             cv2.putText(img=img, text=str(len(totalCount)), org=(255, 100), color=(50, 50, 255), fontScale=5,
                         fontFace=cv2.FONT_HERSHEY_PLAIN, thickness=8)
             cv2.imshow('Tracking', img)
-            cv2.waitKey(1)
+            cv2.waitKey(4)
 
         print(f"Cars counted: {len(totalCount)}")
 
