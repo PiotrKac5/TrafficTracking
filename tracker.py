@@ -43,7 +43,7 @@ def check_crossing(limits, cx: int, cy: int):
 
 
 def track(path: str="videos_to_detect/video0.mp4"):
-    model = YOLO("Yolo-Weights/yolov10x.pt")  # you can change version of YOLO model here (for example to v10n -> nano)
+    model = YOLO("Yolo-Weights/yolov10n.pt")  # you can change version of YOLO model here (for example to v10n -> nano)
 
     ID = int(path[-5])
 
@@ -118,7 +118,7 @@ def track(path: str="videos_to_detect/video0.mp4"):
                 cv2.line(img, (limit[0], limit[1]), (limit[2], limit[3]), (0, 0, 255), 5)
 
             for res in resultsTracker:
-                x1, y1, x2, y2, ID = res
+                x1, y1, x2, y2, obj_ID = res
                 w, h = x2 - x1, y2 - y1
                 cx, cy = int(x1 + w // 2), int(y1 + h // 2)
                 cv2.circle(img, (cx, cy), 10, (0, 255, 255), cv2.FILLED)
@@ -126,7 +126,7 @@ def track(path: str="videos_to_detect/video0.mp4"):
                 crossed, limit = check_crossing(limits=limits, cx=cx, cy=cy)
                 if crossed:
                     dl = len(totalCount)
-                    totalCount.add(ID)
+                    totalCount.add(obj_ID)
                     if dl < len(totalCount):
                         cv2.line(img, (limit[0], limit[1]), (limit[2], limit[3]), (0, 255, 0), 5)
 
@@ -134,10 +134,10 @@ def track(path: str="videos_to_detect/video0.mp4"):
             cv2.putText(img=img, text=str(len(totalCount)), org=(255, 100), color=(50, 50, 255), fontScale=5,
                         fontFace=cv2.FONT_HERSHEY_PLAIN, thickness=8)
             cv2.imshow('Tracking', img)
-            cv2.waitKey(4)
+            cv2.waitKey(1)
 
         print(f"Cars counted: {len(totalCount)}")
-
+        # break
         ID += 1
         if ID == 10:
             ID = 0
