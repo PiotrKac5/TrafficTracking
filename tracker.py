@@ -43,7 +43,7 @@ def check_crossing(limits, cx: int, cy: int):
 
 
 def track(path: str="videos_to_detect/video0.mp4"):
-    model = YOLO("Yolo-Weights/yolov10n.pt")  # you can change version of YOLO model here (for example to v10n -> nano)
+    model = YOLO("Yolo-Weights/yolov10x.pt")  # you can change version of YOLO model here (for example to v10n -> nano)
 
     ID = int(path[-5])
 
@@ -134,7 +134,7 @@ def track(path: str="videos_to_detect/video0.mp4"):
             cv2.putText(img=img, text=str(len(totalCount)), org=(255, 100), color=(50, 50, 255), fontScale=5,
                         fontFace=cv2.FONT_HERSHEY_PLAIN, thickness=8)
             cv2.imshow('Tracking', img)
-            cv2.waitKey(1)
+            cv2.waitKey(20)
 
         print(f"Cars counted: {len(totalCount)}")
         # break
