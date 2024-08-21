@@ -40,7 +40,8 @@ def get_videos(start_id:int=0) -> None:
         with open(f"curr_vid/v{i}.ts", 'wb') as f:
             r = requests.get(url, headers=headers)
             f.write(r.content)
-            subprocess.run(['ffmpeg', '-i', f'curr_vid/v{i}.ts', f'curr_vid/v{i}.mp4'])
+            subprocess.run(['ffmpeg', '-i', f'curr_vid/v{i}.ts', f'curr_vid/v{i}.mp4'], shell=True)
+
 
         os.remove(f"curr_vid/v{i}.ts")
 
@@ -65,14 +66,22 @@ def connect_vid(start_id:int, ID:int):
 
         video = VideoFileClip(f"curr_vid/v{i}.mp4")
         L.append(video)
-        os.remove(f"curr_vid/v{i}.mp4")
+        # os.remove(f"curr_vid/v{i}.mp4")
 
         i += 1
         if i == 100:
             i = 0
 
+
     final_clip = concatenate_videoclips(L)
     final_clip.write_videofile(f"videos_to_detect/video{ID}.mp4")
+
+    i = start_id
+    for _ in range(50):
+        os.remove(f"curr_vid/v{i}.mp4")
+        i += 1
+        if i == 100:
+            i = 0
 
 
 
@@ -102,3 +111,4 @@ def get_starting_point() -> int:
     return start_id
 
 # get_videos(0)
+# connect_vid(48, 0)

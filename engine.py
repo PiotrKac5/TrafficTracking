@@ -50,7 +50,8 @@ def run():
         pool.close()
 
 
-
-run()
+if __name__ == "__main__":
+    run()
+    
 
 # getting_live_videos()
