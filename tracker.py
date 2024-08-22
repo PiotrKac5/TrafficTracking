@@ -4,6 +4,13 @@ import cv2
 import cvzone
 from sort import *
 
+totalCount = set()
+
+def get_and_reset_counter():
+    counted = len(totalCount)
+    totalCount.clear()
+    return counted
+
 
 def cross_product(v1, v2):
     return v1[0] * v2[1] - v1[1] * v2[0]
@@ -60,15 +67,13 @@ def track(path: str="videos_to_detect/video0.mp4"):
         "teddy bear", "hair drier", "toothbrush"
     ]
 
-    tracker = Sort(max_age=500, min_hits=5,
+    tracker = Sort(max_age=1000, min_hits=3,
                    iou_threshold=0.3)  # max_age is so large, because in case of traffic cars will be moving slowly
-
-    totalCount = set()
 
     car_mask = cv2.imread("masks/car_mask.png")
 
     limits = [[20, 393, 126, 450], [341, 345, 501, 272], [410, 476, 666, 592], [693, 230, 871, 291],
-              [1027, 450, 1092, 358], [1092, 317, 1141, 274], [1150, 608, 1208, 703]]
+              [1027, 450, 1141, 298], [1150, 608, 1208, 703]]
 
     while True:
         curr_path = path[:-5] + str(ID) + path[-4:]
@@ -83,6 +88,7 @@ def track(path: str="videos_to_detect/video0.mp4"):
 
         while True:
             succes, img = cap.read()
+            det_time = round(time.time() * 1000.0)
             if not succes:
                 cv2.destroyAllWindows()
                 break
@@ -121,7 +127,7 @@ def track(path: str="videos_to_detect/video0.mp4"):
                 x1, y1, x2, y2, obj_ID = res
                 w, h = x2 - x1, y2 - y1
                 cx, cy = int(x1 + w // 2), int(y1 + h // 2)
-                cv2.circle(img, (cx, cy), 10, (0, 255, 255), cv2.FILLED)
+                cv2.circle(img, (cx, cy), 5, (0, 255, 255), cv2.FILLED)
 
                 crossed, limit = check_crossing(limits=limits, cx=cx, cy=cy)
                 if crossed:
@@ -134,10 +140,11 @@ def track(path: str="videos_to_detect/video0.mp4"):
             cv2.putText(img=img, text=str(len(totalCount)), org=(255, 100), color=(50, 50, 255), fontScale=5,
                         fontFace=cv2.FONT_HERSHEY_PLAIN, thickness=8)
             cv2.imshow('Tracking', img)
-            cv2.waitKey(20)
+            c_time = round(time.time() * 1000.0)
+            cv2.waitKey(max(1, (40-(c_time-det_time))))
 
         print(f"Cars counted: {len(totalCount)}")
-        # break
+
         ID += 1
         if ID == 10:
             ID = 0

@@ -3,6 +3,7 @@ from tracker import track
 from vidgetter import get_videos, connect_vid, get_starting_point
 import time
 from multiprocessing import Pool
+from saver import save_counter
 
 def getting_live_videos() -> None:
     last_download_time = time.time()
@@ -44,8 +45,10 @@ def run():
     with Pool() as pool:
         res1 = pool.apply_async(getting_live_videos)
         res2 = pool.apply_async(track)
+        res3 = pool.apply_async(save_counter)
         res1.get()
         res2.get()
+        res3.get()
 
         pool.close()
 

@@ -28,7 +28,9 @@ def get_videos(start_id:int=0) -> None:
 
     i = start_id
 
-    for _ in range(50):
+    for i in range(start_id, start_id+50):
+        i %= 100
+
         url = "https://cdn-13-go.toya.net.pl/kamery/krak_herbertalagiewnicka_0"
 
         x = f"{i}"
@@ -47,10 +49,6 @@ def get_videos(start_id:int=0) -> None:
 
         print(f"Ts file {i} converted")
 
-        i += 1
-        if i == 100:
-            i = 0
-
     return None
 
 
@@ -60,28 +58,23 @@ def connect_vid(start_id:int, ID:int):
     """
 
     L = []
-    i = start_id
 
-    for _ in range(50):
+    for i in range(start_id, start_id+50):
+        i %= 100
+
 
         video = VideoFileClip(f"curr_vid/v{i}.mp4")
         L.append(video)
         # os.remove(f"curr_vid/v{i}.mp4")
 
-        i += 1
-        if i == 100:
-            i = 0
-
 
     final_clip = concatenate_videoclips(L)
     final_clip.write_videofile(f"videos_to_detect/video{ID}.mp4")
 
-    i = start_id
-    for _ in range(50):
+    for i in range(start_id, start_id+50):
+        i %= 100
+
         os.remove(f"curr_vid/v{i}.mp4")
-        i += 1
-        if i == 100:
-            i = 0
 
 
 
