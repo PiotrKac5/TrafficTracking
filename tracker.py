@@ -3,14 +3,7 @@ import numpy as np
 import cv2
 import cvzone
 from sort import *
-
-totalCount = set()
-
-def get_and_reset_counter():
-    counted = len(totalCount)
-    totalCount.clear()
-    return counted
-
+import multiprocessing
 
 def cross_product(v1, v2):
     return v1[0] * v2[1] - v1[1] * v2[0]
@@ -49,7 +42,7 @@ def check_crossing(limits, cx: int, cy: int):
     return False, None
 
 
-def track(path: str="videos_to_detect/video0.mp4"):
+def track(q:multiprocessing.Manager.Queue, path: str="videos_to_detect/video0.mp4"):
     model = YOLO("Yolo-Weights/yolov10x.pt")  # you can change version of YOLO model here (for example to v10n -> nano)
 
     ID = int(path[-5])
@@ -74,6 +67,9 @@ def track(path: str="videos_to_detect/video0.mp4"):
 
     limits = [[20, 393, 126, 450], [341, 345, 501, 272], [410, 476, 666, 592], [693, 230, 871, 291],
               [1027, 450, 1141, 298], [1150, 608, 1208, 703]]
+
+    totalCount = set()
+    q.put(totalCount)
 
     while True:
         curr_path = path[:-5] + str(ID) + path[-4:]
@@ -123,6 +119,8 @@ def track(path: str="videos_to_detect/video0.mp4"):
             for limit in limits:
                 cv2.line(img, (limit[0], limit[1]), (limit[2], limit[3]), (0, 0, 255), 5)
 
+            totalCount = q.get()
+
             for res in resultsTracker:
                 x1, y1, x2, y2, obj_ID = res
                 w, h = x2 - x1, y2 - y1
@@ -142,6 +140,8 @@ def track(path: str="videos_to_detect/video0.mp4"):
             cv2.imshow('Tracking', img)
             c_time = round(time.time() * 1000.0)
             cv2.waitKey(max(1, (40-(c_time-det_time))))
+
+            q.put(totalCount)
 
         print(f"Cars counted: {len(totalCount)}")
 
