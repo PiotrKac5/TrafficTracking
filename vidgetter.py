@@ -1,3 +1,4 @@
+import time
 import requests
 import subprocess
 import os
@@ -62,10 +63,8 @@ def connect_vid(start_id:int, ID:int):
     for i in range(start_id, start_id+50):
         i %= 100
 
-
         video = VideoFileClip(f"curr_vid/v{i}.mp4")
         L.append(video)
-        # os.remove(f"curr_vid/v{i}.mp4")
 
 
     final_clip = concatenate_videoclips(L)
@@ -102,6 +101,39 @@ def get_starting_point() -> int:
     start_id = int(playlist.data['segments'][0]['uri'][-5:-3])
 
     return start_id
+
+
+def getting_live_videos() -> None:
+    last_download_time = time.time()
+    start_id = get_starting_point()
+
+    ID = 0
+
+    while True:
+        if os.path.exists(f"videos_to_detect/video{ID}.mp4"):
+            os.remove(f"videos_to_detect/video{ID}.mp4")
+
+        last_download_time = time.time()
+        get_videos(start_id=start_id)
+        connect_vid(start_id=start_id, ID=ID)
+
+        f = open(f"videos_to_detect/ready{ID}.txt", "a")
+        f.write(f"File {ID} ready for processing\n")
+        f.close()
+
+        curr_time = time.time()
+        if curr_time < last_download_time + 50 * 2.2:
+            time.sleep(last_download_time + 50 * 2.2 - curr_time)
+
+        start_id += 50
+        if start_id >= 100:
+            start_id -= 100
+
+        ID += 1
+        if ID == 10:
+            ID = 0
+            # break # uncomment only when you do not want program to run endlessly
+
 
 # get_videos(0)
 # connect_vid(48, 0)

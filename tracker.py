@@ -1,9 +1,7 @@
 from ultralytics import YOLO
-import numpy as np
 import cv2
 import cvzone
 from sort import *
-import multiprocessing
 
 def cross_product(v1, v2):
     return v1[0] * v2[1] - v1[1] * v2[0]
@@ -42,7 +40,7 @@ def check_crossing(limits, cx: int, cy: int):
     return False, None
 
 
-def track(q:multiprocessing.Manager.Queue, path: str="videos_to_detect/video0.mp4"):
+def track(q, path: str="videos_to_detect/video0.mp4"):
     model = YOLO("Yolo-Weights/yolov10x.pt")  # you can change version of YOLO model here (for example to v10n -> nano)
 
     ID = int(path[-5])
@@ -76,7 +74,6 @@ def track(q:multiprocessing.Manager.Queue, path: str="videos_to_detect/video0.mp
 
         while not os.path.exists(f"videos_to_detect/ready{ID}.txt"):
             time.sleep(2)
-            # print("File not detected")
 
         os.remove(f"videos_to_detect/ready{ID}.txt")
 
@@ -138,16 +135,14 @@ def track(q:multiprocessing.Manager.Queue, path: str="videos_to_detect/video0.mp
             cv2.putText(img=img, text=str(len(totalCount)), org=(255, 100), color=(50, 50, 255), fontScale=5,
                         fontFace=cv2.FONT_HERSHEY_PLAIN, thickness=8)
             cv2.imshow('Tracking', img)
-            c_time = round(time.time() * 1000.0)
-            cv2.waitKey(max(1, (40-(c_time-det_time))))
 
             q.put(totalCount)
+
+            c_time = round(time.time() * 1000.0)
+            cv2.waitKey(max(1, (40-(c_time-det_time))))
 
         print(f"Cars counted: {len(totalCount)}")
 
         ID += 1
         if ID == 10:
             ID = 0
-
-# track("videos_to_detect/video0.mp4")
-# print(is_file_in_use("videos_to_detect/video0.mp4"))

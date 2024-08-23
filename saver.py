@@ -20,7 +20,7 @@ def write_to_csv(veh_num:int, curr_date_time:str):
         writer.writerow({"date":curr_date_time, "vehicles":veh_num})
         f.close()
 
-def save_counter(q:multiprocessing.Manager.Queue):
+def save_counter(q):
     with open("data.csv", newline='', mode="w") as f:
         writer = csv.DictWriter(f, fieldnames=["date", "vehicles"])
         writer.writeheader()
