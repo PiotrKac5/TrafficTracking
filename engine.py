@@ -1,5 +1,4 @@
-import os
-from TrafficTracking.saver import save_counter
+from saver import save_counter
 from tracker import track
 from vidgetter import getting_live_videos
 from multiprocessing import Pool, Manager
