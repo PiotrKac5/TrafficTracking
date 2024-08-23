@@ -104,6 +104,10 @@ def get_starting_point() -> int:
 
 
 def getting_live_videos() -> None:
+    """
+    Ensures downloading, converting and connecting live-time video without any loss.
+    """
+
     last_download_time = time.time()
     start_id = get_starting_point()
 
@@ -117,9 +121,9 @@ def getting_live_videos() -> None:
         get_videos(start_id=start_id)
         connect_vid(start_id=start_id, ID=ID)
 
-        f = open(f"videos_to_detect/ready{ID}.txt", "a")
-        f.write(f"File {ID} ready for processing\n")
-        f.close()
+        with open(f"videos_to_detect/ready{ID}.txt", "a") as f:
+            f.write(f"File {ID} ready for processing\n")
+            f.close()
 
         curr_time = time.time()
         if curr_time < last_download_time + 50 * 2.2:

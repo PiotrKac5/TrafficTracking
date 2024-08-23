@@ -1,13 +1,26 @@
+import multiprocessing
 from ultralytics import YOLO
 import cv2
 import cvzone
 from sort import *
 
-def cross_product(v1, v2):
+def cross_product(v1, v2) -> int:
+    """
+    Returns cross product of two vectors (v1 and v2)
+    """
+
     return v1[0] * v2[1] - v1[1] * v2[0]
 
 
-def check_crossing(limits, cx: int, cy: int):
+def check_crossing(limits, cx: int, cy: int) -> (bool, int):
+    """
+    Checks whether object is in area of any segment, which is counted as crossing one.
+    :param limits: array of 4-element arrays, in which are segment coordinates
+    :param cx: middle x-coordinate of an object
+    :param cy: middle y-coordinate of an object
+    :return: True, limit if object crossed segment number "limit"; False if object did not cross any segments
+    """
+
     rec_size = 30
     # I assume that in limits always x1 < x2
     for limit in limits:
@@ -40,7 +53,13 @@ def check_crossing(limits, cx: int, cy: int):
     return False, None
 
 
-def track(q, path: str="videos_to_detect/video0.mp4"):
+def track(q: multiprocessing.Queue, path: str="videos_to_detect/video0.mp4") -> None:
+    """
+    Reads mp4 files, detects objects in each frame in certain regions (not covered by mask) and shows result of it.
+    It also counts all objects that are crossing segments defined in "limits" and shows it on screen.
+    Number of vehicles is automatically zeroed after every 15 minutes (when minutes % 15 == 0) by other process.
+    """
+
     model = YOLO("Yolo-Weights/yolov10x.pt")  # you can change version of YOLO model here (for example to v10n -> nano)
 
     ID = int(path[-5])
