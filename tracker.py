@@ -1,4 +1,5 @@
 import multiprocessing
+import wres
 from ultralytics import YOLO
 import cv2
 import cvzone
@@ -99,12 +100,11 @@ def track(q: multiprocessing.Queue, path: str="videos_to_detect/video0.mp4") -> 
         cap = cv2.VideoCapture(curr_path)
 
         while True:
+            with wres.set_resolution(10000): # ensures precision of 1ms on Windows system
+                det_time = round(time.time() * 1000.0)
             succes, img = cap.read()
-            det_time = round(time.time() * 1000.0)
             if not succes:
-                cv2.destroyAllWindows()
                 break
-
             imgRegionCars = cv2.bitwise_and(img, car_mask)
 
             results = model(imgRegionCars, stream=True)
@@ -156,9 +156,9 @@ def track(q: multiprocessing.Queue, path: str="videos_to_detect/video0.mp4") -> 
             cv2.imshow('Tracking', img)
 
             q.put(totalCount)
-
-            c_time = round(time.time() * 1000.0)
-            cv2.waitKey(max(1, (40-(c_time-det_time))))
+            with wres.set_resolution(10000): # ensures precision of 1ms on Windows system
+                c_time = round(time.time() * 1000.0)
+                cv2.waitKey(max(1, (40-(c_time-det_time))))
 
         print(f"Cars counted: {len(totalCount)}")
 
