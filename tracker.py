@@ -65,18 +65,7 @@ def track(q: multiprocessing.Queue, path: str="videos_to_detect/video0.mp4") -> 
 
     ID = int(path[-5])
 
-    classNames = [
-        "person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat",
-        "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",
-        "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella",
-        "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball", "kite", "baseball bat",
-        "baseball glove", "skateboard", "surfboard", "tennis racket", "bottle", "wine glass", "cup",
-        "fork", "knife", "spoon", "bowl", "banana", "apple", "sandwich", "orange", "broccoli",
-        "carrot", "hot dog", "pizza", "donut", "cake", "chair", "sofa", "pottedplant", "bed",
-        "diningtable", "toilet", "tvmonitor", "laptop", "mouse", "remote", "keyboard", "cell phone",
-        "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors",
-        "teddy bear", "hair drier", "toothbrush"
-    ]
+    classNames = model.names
 
     tracker = Sort(max_age=1000, min_hits=3,
                    iou_threshold=0.3)  # max_age is so large, because in case of traffic cars will be moving slowly
@@ -163,5 +152,5 @@ def track(q: multiprocessing.Queue, path: str="videos_to_detect/video0.mp4") -> 
         print(f"Cars counted: {len(totalCount)}")
 
         ID += 1
-        if ID == 10:
+        if ID == 1000:
             ID = 0
