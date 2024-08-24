@@ -17,20 +17,22 @@ def get_and_reset_counter(totalCount: set, q: multiprocessing.Queue) -> int:
     return counted
 
 
-def write_to_csv(veh_num: int, curr_date_time: str) -> None:
+def write_to_csv(veh_num: int, curr_date: str, curr_time:str) -> None:
     """
     Writes to "data.csv" number of vehicles from 15 minutes before current date and time.
     :param veh_num: Number of vehicles
-    :param curr_date_time: Current date and time
+    :param curr_date: Current date
+    :param curr_time: Current time
     """
 
     with open("data.csv", newline='', mode="a") as f:
         fieldnames = [
             "date",
+            "time",
             "vehicles",
         ]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writerow({"date": curr_date_time, "vehicles": veh_num})
+        writer.writerow({"date": curr_date, "time":curr_time, "vehicles": veh_num})
         f.close()
 
 
@@ -41,7 +43,7 @@ def save_counter(q: multiprocessing.Queue) -> None:
     """
 
     with open("data.csv", newline='', mode="w") as f:
-        writer = csv.DictWriter(f, fieldnames=["date", "vehicles"])
+        writer = csv.DictWriter(f, fieldnames=["date", "time", "vehicles"])
         writer.writeheader()
         f.close()
 
@@ -54,12 +56,13 @@ def save_counter(q: multiprocessing.Queue) -> None:
             curr_datetime = datetime.now()
             curr_min = int(curr_datetime.strftime("%M"))
 
-        curr_date_time = curr_datetime.strftime("%d/%m/%Y %H:%M")
+        curr_date = curr_datetime.strftime("%d/%m/%Y")
+        curr_time = curr_datetime.strftime("%H:%M")
 
         totalCount = q.get()
         while not q.empty():
             totalCount = q.get()
         veh_num = get_and_reset_counter(totalCount=totalCount, q=q)
 
-        write_to_csv(veh_num=veh_num, curr_date_time=curr_date_time)
+        write_to_csv(veh_num=veh_num, curr_date=curr_date, curr_time=curr_time)
         time.sleep(60)
