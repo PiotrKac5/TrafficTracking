@@ -54,7 +54,7 @@ def check_crossing(limits, cx: int, cy: int) -> (bool, int):
     return False, None
 
 
-def track(q: multiprocessing.Queue, path: str="videos_to_detect/video0.mp4") -> None:
+def track(q: multiprocessing.Queue, p:multiprocessing.Queue, path: str="videos_to_detect/video0.mp4") -> None:
     """
     Reads mp4 files, detects objects in each frame in certain regions (not covered by mask) and shows result of it.
     It also counts all objects that are crossing segments defined in "limits" and shows it on screen.
@@ -81,10 +81,10 @@ def track(q: multiprocessing.Queue, path: str="videos_to_detect/video0.mp4") -> 
     while True:
         curr_path = path[:-5] + str(ID) + path[-4:]
 
-        while not os.path.exists(f"videos_to_detect/ready{ID}.txt"):
-            time.sleep(2)
-
-        os.remove(f"videos_to_detect/ready{ID}.txt")
+        # while not os.path.exists(f"videos_to_detect/ready{ID}.txt"):
+        #     time.sleep(2)
+        #
+        # os.remove(f"videos_to_detect/ready{ID}.txt")
 
         cap = cv2.VideoCapture(curr_path)
 
@@ -142,15 +142,16 @@ def track(q: multiprocessing.Queue, path: str="videos_to_detect/video0.mp4") -> 
 
             cv2.putText(img=img, text=str(len(totalCount)), org=(255, 100), color=(50, 50, 255), fontScale=5,
                         fontFace=cv2.FONT_HERSHEY_PLAIN, thickness=8)
-            cv2.imshow('Tracking', img)
+            # cv2.imshow('Tracking', img)
 
+            p.put(img) # for running server
             q.put(totalCount)
             with wres.set_resolution(10000): # ensures precision of 1ms on Windows system
                 c_time = round(time.time() * 1000.0)
                 cv2.waitKey(max(1, (40-(c_time-det_time))))
 
         print(f"Cars counted: {len(totalCount)}")
-
+        break
         ID += 1
         if ID == 1000:
             ID = 0
