@@ -151,7 +151,7 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, path: str="videos_t
                 cv2.waitKey(max(1, (40-(c_time-det_time))))
 
         print(f"Cars counted: {len(totalCount)}")
-        break
+
         ID += 1
         if ID == 1000:
             ID = 0
