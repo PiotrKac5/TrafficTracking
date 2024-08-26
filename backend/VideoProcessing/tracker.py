@@ -1,9 +1,12 @@
+import base64
 import multiprocessing
 import wres
 from ultralytics import YOLO
 import cv2
 import cvzone
 from sort import *
+import redis
+from publisher import publish_to_redis
 
 def cross_product(v1, v2) -> int:
     """
@@ -81,10 +84,10 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, path: str="videos_t
     while True:
         curr_path = path[:-5] + str(ID) + path[-4:]
 
-        # while not os.path.exists(f"videos_to_detect/ready{ID}.txt"):
-        #     time.sleep(2)
-        #
-        # os.remove(f"videos_to_detect/ready{ID}.txt")
+        while not os.path.exists(f"videos_to_detect/ready{ID}.txt"):
+            time.sleep(2)
+
+        os.remove(f"videos_to_detect/ready{ID}.txt")
 
         cap = cv2.VideoCapture(curr_path)
 
@@ -144,14 +147,29 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, path: str="videos_t
                         fontFace=cv2.FONT_HERSHEY_PLAIN, thickness=8)
             # cv2.imshow('Tracking', img)
 
-            p.put(img) # for running server
+            # publish_to_redis(img)
+            p.put(img)
+
             q.put(totalCount)
             with wres.set_resolution(10000): # ensures precision of 1ms on Windows system
                 c_time = round(time.time() * 1000.0)
-                cv2.waitKey(max(1, (40-(c_time-det_time))))
+                # cv2.waitKey(max(1, (40-(c_time-det_time))))
 
         print(f"Cars counted: {len(totalCount)}")
 
         ID += 1
         if ID == 1000:
             ID = 0
+
+# if __name__ == "__main__":
+#     # publish_to_redis()
+#     q = multiprocessing.Manager().Queue()
+#     p = multiprocessing.Manager().Queue()
+#     with multiprocessing.Pool() as pool:
+#         print("Starting...")
+#         res2 = pool.apply_async(track, args=(q,p,))
+#         res1 = pool.apply_async(publish_to_redis, args=(p,))
+#         res2.get()
+#         res1.get()
+#
+#         pool.close()
