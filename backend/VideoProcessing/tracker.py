@@ -1,11 +1,9 @@
-import base64
 import multiprocessing
 import wres
 from ultralytics import YOLO
 import cv2
 import cvzone
 from sort import *
-import redis
 from publisher import publish_to_redis
 
 def cross_product(v1, v2) -> int:
@@ -64,7 +62,7 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, path: str="videos_t
     Number of vehicles is automatically zeroed after every 15 minutes (when minutes % 15 == 0) by other process.
     """
 
-    model = YOLO("Yolo-Weights/yolov10x.pt")  # you can change version of YOLO model here (for example to v10n -> nano)
+    model = YOLO("Yolo-Weights/yolov10n.pt")  # you can change version of YOLO model here (for example to v10n -> nano)
 
     ID = int(path[-5])
 
@@ -147,7 +145,6 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, path: str="videos_t
                         fontFace=cv2.FONT_HERSHEY_PLAIN, thickness=8)
             # cv2.imshow('Tracking', img)
 
-            # publish_to_redis(img)
             p.put(img)
 
             q.put(totalCount)
@@ -156,20 +153,20 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, path: str="videos_t
                 # cv2.waitKey(max(1, (40-(c_time-det_time))))
 
         print(f"Cars counted: {len(totalCount)}")
-
+        # break
         ID += 1
         if ID == 1000:
             ID = 0
 
-# if __name__ == "__main__":
-#     # publish_to_redis()
-#     q = multiprocessing.Manager().Queue()
-#     p = multiprocessing.Manager().Queue()
-#     with multiprocessing.Pool() as pool:
-#         print("Starting...")
-#         res2 = pool.apply_async(track, args=(q,p,))
-#         res1 = pool.apply_async(publish_to_redis, args=(p,))
-#         res2.get()
-#         res1.get()
-#
-#         pool.close()
+if __name__ == "__main__":
+    # publish_to_redis()
+    q = multiprocessing.Manager().Queue()
+    p = multiprocessing.Manager().Queue()
+    with multiprocessing.Pool() as pool:
+        print("Starting...")
+        res2 = pool.apply_async(track, args=(q,p,))
+        res1 = pool.apply_async(publish_to_redis, args=(p,))
+        res2.get()
+        res1.get()
+
+        pool.close()

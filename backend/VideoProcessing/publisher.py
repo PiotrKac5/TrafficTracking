@@ -2,9 +2,6 @@ import base64
 import multiprocessing
 import cv2
 import redis
-from multiprocessing import Queue
-
-import wres
 
 r = redis.Redis(host='localhost', port=6379, db=0)
 
