@@ -1,4 +1,6 @@
 import multiprocessing
+import os
+from vidgetter import get_starting_point
 import wres
 from ultralytics import YOLO
 import cv2
@@ -55,16 +57,20 @@ def check_crossing(limits, cx: int, cy: int) -> (bool, int):
     return False, None
 
 
-def track(q: multiprocessing.Queue, p:multiprocessing.Queue, path: str="videos_to_detect/video0.mp4") -> None:
+def track(q: multiprocessing.Queue, p:multiprocessing.Queue, k:multiprocessing.Queue, path: str="curr_vid/v0.ts") -> None:
     """
     Reads mp4 files, detects objects in each frame in certain regions (not covered by mask) and shows result of it.
     It also counts all objects that are crossing segments defined in "limits" and shows it on screen.
     Number of vehicles is automatically zeroed after every 15 minutes (when minutes % 15 == 0) by other process.
     """
 
-    model = YOLO("Yolo-Weights/yolov10n.pt")  # you can change version of YOLO model here (for example to v10n -> nano)
+    model = YOLO("Yolo-Weights/yolov10b.pt")  # you can change version of YOLO model here (for example to v10n -> nano)
 
-    ID = int(path[-5])
+    ID = 0
+    while k.empty():
+        time.sleep(1)
+    ID = k.get()
+    # k.close()
 
     classNames = model.names
 
@@ -80,14 +86,16 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, path: str="videos_t
     q.put(totalCount)
 
     while True:
-        curr_path = path[:-5] + str(ID) + path[-4:]
+        curr_path = path[:-4] + str(ID) + path[-3:]
 
-        while not os.path.exists(f"videos_to_detect/ready{ID}.txt"):
-            time.sleep(2)
-
-        os.remove(f"videos_to_detect/ready{ID}.txt")
+        while not os.path.exists(curr_path):
+            time.sleep(1)
 
         cap = cv2.VideoCapture(curr_path)
+
+        path_to_remove = path[:-4] + str((ID-1)%100) + path[-3:]
+        if os.path.exists(path_to_remove):
+            os.remove(path_to_remove)
 
         while True:
             with wres.set_resolution(10000): # ensures precision of 1ms on Windows system
@@ -143,7 +151,7 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, path: str="videos_t
 
             cv2.putText(img=img, text=str(len(totalCount)), org=(255, 100), color=(50, 50, 255), fontScale=5,
                         fontFace=cv2.FONT_HERSHEY_PLAIN, thickness=8)
-            # cv2.imshow('Tracking', img)
+            # cv2.imshow('Tracking', img) #shows frame
 
             p.put(img)
 
@@ -153,20 +161,19 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, path: str="videos_t
                 # cv2.waitKey(max(1, (40-(c_time-det_time))))
 
         print(f"Cars counted: {len(totalCount)}")
-        # break
+
         ID += 1
-        if ID == 1000:
+        if ID == 100:
             ID = 0
 
-if __name__ == "__main__":
-    # publish_to_redis()
+if __name__ == "__main__": # added if you want to test only tracker and publisher without running whole app
     q = multiprocessing.Manager().Queue()
     p = multiprocessing.Manager().Queue()
+    k = multiprocessing.Manager().Queue()
     with multiprocessing.Pool() as pool:
         print("Starting...")
-        res2 = pool.apply_async(track, args=(q,p,))
+        res2 = pool.apply_async(track, args=(q,p,k,))
         res1 = pool.apply_async(publish_to_redis, args=(p,))
         res2.get()
         res1.get()
-
         pool.close()

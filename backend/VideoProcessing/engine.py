@@ -10,8 +10,9 @@ def run():
     with Pool() as pool:
         q = Manager().Queue()
         p = Manager().Queue()
-        res1 = pool.apply_async(getting_live_videos)
-        res2 = pool.apply_async(track, args=(q,p))
+        k = Manager().Queue()
+        res1 = pool.apply_async(getting_live_videos, args=(k,))
+        res2 = pool.apply_async(track, args=(q, p, k))
         res3 = pool.apply_async(save_counter, args=(q,))
         res4 = pool.apply_async(publish_to_redis, args=(p,))
         res1.get()
