@@ -6,7 +6,7 @@
 
 .App .sidebar {
   width: 30px;
-  background-color: #282c34;
+  background-color: #343434;
   color: white;
   display: flex;
   flex-direction: column;
@@ -26,7 +26,7 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  background-color: darkblue;
+  background-color: #DFDFDF;
   border: none;
   color: #282c34;
   font-size: 18px;
@@ -37,7 +37,7 @@
 }
 
 .toggle-button:hover {
-  background-color: #21a1f1;
+  background-color: #A7A7A7;
 }
 
 .sidebar button {
@@ -47,9 +47,9 @@
   width: 100%;
   padding: 10px;
   margin: 10px 0;
-  background-color: darkblue;
+  background-color: #DFDFDF;
   border: none;
-  color: #282c34;
+  color: #343434;
   font-size: 16px;
   cursor: pointer;
   border-radius: 5px;
@@ -69,7 +69,11 @@
   opacity: 1;
   transform: translateX(-100%);
   transition: opacity 0.3s ease, transform 0.3s ease;
-  color: whitesmoke;
+  color: #343434;
+}
+
+.sidebar button:hover{
+  background-color: #A7A7A7;
 }
 
 .sidebar.expanded button .text {
@@ -101,8 +105,8 @@
   justify-content: center;
   width: 160px;
   height: 40px;
-  background-color: darkblue;
-  color: white;
+  background-color: #DFDFDF;
+  color: #343434;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -111,11 +115,11 @@
 
 /* Expanded state for main button */
 .main-button.expanded {
-  background-color: #21a1f1;
+  background-color: #A7A7A7;
 }
 
 .main-button:hover{
-  background-color: #21a1f1;
+  background-color: #A7A7A7;
 }
 
 /* Additional buttons styling */
@@ -137,8 +141,8 @@
   justify-content: center;
   width: 100px;
   height: 40px;
-  background-color: #28a745;
-  color: whitesmoke;
+  background-color: #DFDFDF;
+  color: #343434;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -151,7 +155,7 @@
 }
 
 .additional-buttons .additional-button:hover {
-  background-color: #218838;
+  background-color: #A7A7A7;
 }
 
 /* Show additional buttons when expanded or hovered */
