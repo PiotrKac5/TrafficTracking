@@ -71,15 +71,22 @@ def handle_connect():
 
 @socketio.on('request_frame')
 def handle_frame_request():
-    c_time = 0
-    det_time = 0
+    # c_time = 0
+    # det_time = 0
+    start_time = round(time.time() * 1000.0)
+    frame_counter = 0
     for frame in generate_frames():
-        with wres.set_resolution(10000):  # ensures precision of 1ms on Windows system
-            c_time = round(time.time() * 1000.0)
-        socketio.sleep((max(0, (40-(c_time-det_time))/1000.0)))
+        if frame_counter == 0:
+            start_time = round(time.time() * 1000.0)
+        frame_counter += 1
         socketio.emit('new_frame', frame)
         with wres.set_resolution(10000):  # ensures precision of 1ms on Windows system
-            det_time = round(time.time() * 1000.0)
+            c_time = round(time.time() * 1000.0)
+        if c_time-start_time > frame_counter * 40:
+            socketio.sleep(0)
+        else:
+            wait_time = frame_counter * 40 - (c_time-start_time)
+            socketio.sleep(wait_time/1000.0)
 
 @socketio.on('disconnect')
 def handle_disconnect():
@@ -95,6 +102,6 @@ if __name__ == '__main__':
         thread.daemon = True
         thread.start()
 
-        socketio.run(app, host='localhost', port=5000, debug=True)
+        socketio.run(app, host='0.0.0.0', port=5000, debug=True)
     finally:
         restore_timer_resolution()

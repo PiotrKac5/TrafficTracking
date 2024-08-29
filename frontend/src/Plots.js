@@ -1,7 +1,6 @@
-// src/Plots.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './Plots.css'; // Assuming you are using a separate CSS file
+import './Plots.css';
 
 const Plots = () => {
   const [plots, setPlots] = useState({});
