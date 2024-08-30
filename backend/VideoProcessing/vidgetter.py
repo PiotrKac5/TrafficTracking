@@ -86,8 +86,8 @@ def getting_live_videos(q:multiprocessing.Queue) -> None:
     ID = 0
 
     while True:
-        if os.path.exists(f"videos_to_detect/video{ID}.mp4"):
-            os.remove(f"videos_to_detect/video{ID}.mp4")
+        # if os.path.exists(f"videos_to_detect/video{ID}.mp4"):
+        #     os.remove(f"videos_to_detect/video{ID}.mp4")
 
         last_download_time = time.time()
         get_videos(start_id=start_id)
@@ -100,6 +100,6 @@ def getting_live_videos(q:multiprocessing.Queue) -> None:
         start_id %= 100
 
         ID += 1
-        if ID == 1000:
+        if ID == 100:
             ID = 0
             # break # uncomment only when you do not want program to run endlessly

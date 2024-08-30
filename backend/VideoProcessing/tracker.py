@@ -64,7 +64,7 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, k:multiprocessing.Q
     Number of vehicles is automatically zeroed after every 15 minutes (when minutes % 15 == 0) by other process.
     """
 
-    model = YOLO("Yolo-Weights/yolov10b.pt")  # you can change version of YOLO model here (for example to v10n -> nano)
+    model = YOLO("Yolo-Weights/yolov10n.pt")  # you can change version of YOLO model here (for example to v10n -> nano)
 
     ID = 0
     while k.empty():

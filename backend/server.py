@@ -1,5 +1,9 @@
+import base64
 import threading
 from queue import Queue
+
+import cv2
+import numpy as np
 import redis
 import wres
 from flask import Flask, render_template
@@ -61,7 +65,18 @@ def redis_listener():
 
 def generate_frames():
     while True:
+        while q.empty():
+            time.sleep(0.05)
         frame = q.get()
+        # image_data = base64.b64decode(frame)
+        #
+        # # 2. Convert the bytes to a numpy array
+        # nparr = np.frombuffer(image_data, np.uint8)
+        # print("testing===============================================================================================")
+        # # 3. Decode the image array back into an OpenCV image (BGR format)
+        # img_decoded = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        # cv2.imshow('Test', img_decoded)
+        # cv2.waitKey(1)
         yield frame
 
 
@@ -76,6 +91,13 @@ def handle_frame_request():
     start_time = round(time.time() * 1000.0)
     frame_counter = 0
     for frame in generate_frames():
+        # with wres.set_resolution(10000):  # ensures precision of 1ms on Windows system
+        #     c_time = round(time.time() * 1000.0)
+        # socketio.emit('new_frame', frame)
+        # socketio.sleep(0)
+        # with wres.set_resolution(10000):  # ensures precision of 1ms on Windows system
+        #     det_time = round(time.time() * 1000.0)
+        #     print(det_time-c_time, "weird ==========================================================================")
         if frame_counter == 0:
             start_time = round(time.time() * 1000.0)
         frame_counter += 1
