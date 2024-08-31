@@ -23,7 +23,7 @@ function ExpandableButton() {
   const handleButtonClick = (duration) => {
       // window.location.href = 'https://www.youtube.com';
       navigate('/');
-      window.location.href = `plot/${duration}`;
+      window.location.href = `plots/${duration}`;
   };
 
   return (

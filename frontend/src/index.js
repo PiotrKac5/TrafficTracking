@@ -15,7 +15,7 @@ root.render(
           <App />
           <Routes>
               <Route path='/' element={<Show/>}></Route>
-              <Route path='/plot/:duration' element={<Plots/>}></Route>
+              <Route path='/plots/:duration' element={<Plots/>}></Route>
           </Routes>
         </div>
     </Router>

@@ -1,30 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './Plots.css';
 
 const Plots = () => {
-  const [plots, setPlots] = useState({});
+  const [plotUrl, setPlotUrl] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchPlots = async () => {
+    // Fetch the plot image from the backend
+    const fetchPlot = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/plots');
-        setPlots(response.data);
+        const response = await fetch('http://localhost:5000/plots');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const imageBlob = await response.blob();
+        const imageUrl = URL.createObjectURL(imageBlob);
+        setPlotUrl(imageUrl);
+        setLoading(false);
       } catch (error) {
-        console.error('Error fetching plots:', error);
+        console.error('Error fetching the plot:', error);
+        setError(error);
+        setLoading(false);
       }
     };
 
-    fetchPlots();
+    fetchPlot();
   }, []);
 
+  if (loading) {
+    return <p>Loading plot...</p>;
+  }
+
+  if (error) {
+    return <p>Error loading plot: {error.message}</p>;
+  }
+
   return (
-    <div className="plots-container">
-      <h1>Plots from Backend</h1>
-      <div>
-        <h2>Plot 1</h2>
-        {plots.plot1 && <img src={plots.plot1} alt="Plot 1" />}
-      </div>
+    <div>
+      <h1>Matplotlib Plot</h1>
+      {plotUrl && <img src={plotUrl} alt="Matplotlib Plot" />}
     </div>
   );
 };
