@@ -1,15 +1,17 @@
-import base64
+import io
 import threading
 from queue import Queue
-
+from VideoProcessing.plots import generate_plots
 import cv2
-import numpy as np
 import redis
 import wres
-from flask import Flask, render_template
+from flask import Flask, render_template, send_file
+from flask_cors import CORS
 from flask_socketio import SocketIO, emit
 import ctypes
 import time
+
+from matplotlib import pyplot as plt
 
 # Load the necessary Windows library
 winmm = ctypes.WinDLL('winmm')
@@ -48,6 +50,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, cors_allowed_origins="*")
 r = redis.Redis(host='localhost', port=6379, db=0)
+CORS(app)
+
 
 q = Queue() # queue for frames
 
@@ -68,15 +72,6 @@ def generate_frames():
         while q.empty():
             time.sleep(0.05)
         frame = q.get()
-        # image_data = base64.b64decode(frame)
-        #
-        # # 2. Convert the bytes to a numpy array
-        # nparr = np.frombuffer(image_data, np.uint8)
-        # print("testing===============================================================================================")
-        # # 3. Decode the image array back into an OpenCV image (BGR format)
-        # img_decoded = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        # cv2.imshow('Test', img_decoded)
-        # cv2.waitKey(1)
         yield frame
 
 
@@ -86,18 +81,9 @@ def handle_connect():
 
 @socketio.on('request_frame')
 def handle_frame_request():
-    # c_time = 0
-    # det_time = 0
     start_time = round(time.time() * 1000.0)
     frame_counter = 0
     for frame in generate_frames():
-        # with wres.set_resolution(10000):  # ensures precision of 1ms on Windows system
-        #     c_time = round(time.time() * 1000.0)
-        # socketio.emit('new_frame', frame)
-        # socketio.sleep(0)
-        # with wres.set_resolution(10000):  # ensures precision of 1ms on Windows system
-        #     det_time = round(time.time() * 1000.0)
-        #     print(det_time-c_time, "weird ==========================================================================")
         if frame_counter == 0:
             start_time = round(time.time() * 1000.0)
         frame_counter += 1
@@ -114,7 +100,21 @@ def handle_frame_request():
 def handle_disconnect():
     print('Client disconnected')
 
+@app.route('/plots/<duration>', methods=['GET'])
+def plot(duration):
+    # Generate a plot
+    fig, ax = plt.subplots()
+    ax.plot([1, 2, 3, 4, 5], [10, 20, 25, 30, 32])
+    ax.set(xlabel='x-axis', ylabel='y-axis', title='Sample Plot')
 
+    # Save plot to a bytes buffer
+    buf = io.BytesIO()
+    fig.savefig(buf, format='png')
+    buf.seek(0)
+    plt.close(fig)  # Close the figure to free memory
+
+    # Send the image to the client
+    return send_file(buf, mimetype='image/png')
 
 
 if __name__ == '__main__':
