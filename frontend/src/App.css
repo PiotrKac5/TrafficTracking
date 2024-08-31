@@ -1,138 +1,83 @@
+/* App container */
 .App {
-  display: flex;
-  /*height: 100vh;*/
-  font-family: Arial, sans-serif;
+  padding-top: 0; /* Space for the fixed navbar */
 }
 
-.App .sidebar {
-  width: 30px;
-  background-color: #343434;
-  color: white;
+/* Navbar styles */
+.navbar {
   display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  top: 0;
+  background-color: #2F3061;
+  gap: 40px;
+  padding: 15px;
+  position: relative;
+  z-index: 1000;
+}
+
+.navbar .nav-button {
+  background-color: #0E34A0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
-  align-items: center;
-  padding-top: 50px;
-  transition: width 0.3s ease;
-  padding-left: 50px;
-}
-
-.sidebar.expanded {
-  width: 160px;
-}
-
-.sidebar .toggle-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
+  color: #DFDFDF;
+  border: none;
+  border-radius: 10px;
+  width: 100px;
   height: 40px;
-  background-color: #DFDFDF;
-  border: none;
-  color: #282c34;
-  font-size: 18px;
-  cursor: pointer;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  transition: background-color 0.3s ease;
-}
-
-.toggle-button:hover {
-  background-color: #A7A7A7;
-}
-
-.sidebar button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  background-color: #DFDFDF;
-  border: none;
-  color: #343434;
+  text-align: center;
+  text-decoration: none;
   font-size: 16px;
   cursor: pointer;
-  border-radius: 5px;
-  text-align: center;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  overflow: hidden;
-  white-space: nowrap;
 }
 
-.sidebar button .icon {
-  margin-right: 5px;
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-.sidebar button .text {
-  opacity: 1;
-  transform: translateX(-100%);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  color: #343434;
-}
-
-.sidebar button:hover{
-  background-color: #A7A7A7;
-}
-
-.sidebar.expanded button .text {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.sidebar .expandable-button-container{
-  display: flex;
-  align-items: center;
-  width: 100%;
-  text-align: center;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-/* Container for the expandable button */
-.expandable-button-container {
-  position: relative;
-  display: inline-block;
-}
-
-/* Main button styling */
-.expandable-button-container .main-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 160px;
-  height: 40px;
+.nav-button:hover {
   background-color: #DFDFDF;
   color: #343434;
+}
+
+.expandable-button-container .main-button{
+  background-color: #0E34A0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: #DFDFDF;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
+  width: 100px;
+  height: 40px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-/* Expanded state for main button */
-.main-button.expanded {
-  background-color: #A7A7A7;
+.expandable-button-container .main-button:hover {
+  background-color: #DFDFDF;
+  color: #343434;
 }
 
-.main-button:hover{
-  background-color: #A7A7A7;
+.expandable-button-container{
+  position: relative;
+  z-index: 2000;
 }
 
-/* Additional buttons styling */
 .additional-buttons {
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 0%; /* Center vertically relative to the main button */
-  left: 100%; /* Position to the right of the main button */
-  margin-left: 5px; /* Space between the main button and additional buttons */
+  top: 100%; /* Center vertically relative to the main button */
+  left: 0%; /* Position to the right of the main button */
+  margin-bottom: 5px; /* Space between the main button and additional buttons */
   opacity: 1;
-  visibility: hidden;
+  /*visibility: hidden;*/
   transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 3000;
+  padding-top:3px;
 }
 
 .additional-buttons .additional-button {
@@ -141,13 +86,14 @@
   justify-content: center;
   width: 100px;
   height: 40px;
-  background-color: #DFDFDF;
-  color: #343434;
-  border: none;
+  background-color: #0E34A0;
+  color: #DFDFDF;
+  border: solid 1px #343434;
   border-radius: 5px;
   cursor: pointer;
-  margin-bottom: 0px;
+  /*margin-bottom: 2px;*/
   transition: background-color 0.3s ease;
+  z-index: 40000;
 }
 
 .additional-buttons .additional-button:last-child {
@@ -155,7 +101,8 @@
 }
 
 .additional-buttons .additional-button:hover {
-  background-color: #A7A7A7;
+  background-color: #DFDFDF;
+  color: #343434;
 }
 
 /* Show additional buttons when expanded or hovered */

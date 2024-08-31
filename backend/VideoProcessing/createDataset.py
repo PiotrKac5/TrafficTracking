@@ -17,7 +17,7 @@ def create(q:multiprocessing.Queue):
     while q.empty():
         time.sleep(1)
     ID = q.get()
-    img_id = 0
+    img_id = 151231 # next start with 95000
 
     while True:
         path = f"curr_vid/v{ID}.ts"

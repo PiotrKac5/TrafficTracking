@@ -54,42 +54,30 @@ function ExpandableButton() {
   );
 }
 
-function App() {
-    const navigate = useNavigate();
-    const [isSidebarExpanded, setSidebarExpanded] = useState(false);
 
-    const toggleSidebar = () => {
-        setSidebarExpanded(!isSidebarExpanded);
-    };
+function Navbar() {
+  const navigate = useNavigate();
 
-    const handleButtonClick = (buttonId) => {
-        // console.log(`Button ${buttonId} clicked`);
-        // window.location.href = 'https://localhost:3000';
-        navigate('/');
-        // Add logic for button click actions here
-    };
-
-    return (
-        <div className="App">
-            <div className={`sidebar ${isSidebarExpanded ? 'expanded' : ''}`}>
-                <button className="toggle-button" onClick={toggleSidebar}>
-                    {isSidebarExpanded ? '<' : '>'}
-                </button>
-                {isSidebarExpanded && (
-                    <>
-                        <button onClick={() => handleButtonClick(1)}>
-                            {/*<span className="icon">📁</span>*/}
-                            <span className="text">Live Tracking</span>
-                        </button>
-                        <ExpandableButton onClick={() => handleButtonClick(2)}>
-                            {/*<span className="icon">📂</span>*/}
-                            <span className="text">Plots</span>
-                        </ExpandableButton>
-                    </>
-                )}
-            </div>
-        </div>
-    );
+  return (
+    <div className="navbar">
+      <button className="nav-button" onClick={() => navigate('/')}>
+        Home
+      </button>
+      <ExpandableButton>
+        Plots
+      </ExpandableButton>
+      <button className="nav-button" onClick={() => navigate('/about')}>
+        About
+      </button>
+    </div>
+  );
 }
 
+function App() {
+  return (
+    <div className="App">
+      <Navbar />
+    </div>
+  );
+}
 export default App;

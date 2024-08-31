@@ -25,10 +25,6 @@ const Plots = () => {
         <h2>Plot 1</h2>
         {plots.plot1 && <img src={plots.plot1} alt="Plot 1" />}
       </div>
-      <div>
-        <h2>Plot 2</h2>
-        {plots.plot2 && <img src={plots.plot2} alt="Plot 2" />}
-      </div>
     </div>
   );
 };

@@ -65,6 +65,7 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, k:multiprocessing.Q
     """
 
     model = YOLO("Yolo-Weights/yolov10n.pt")  # you can change version of YOLO model here (for example to v10n -> nano)
+    # model = YOLO("runs/detect/yolov10n-custom2/weights/best.pt") # model trained on custom dataset
 
     ID = 0
     while k.empty():
@@ -100,8 +101,8 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, k:multiprocessing.Q
         while True:
             with wres.set_resolution(10000): # ensures precision of 1ms on Windows system
                 det_time = round(time.time() * 1000.0)
-            succes, img = cap.read()
-            if not succes:
+            success, img = cap.read()
+            if not success:
                 break
             imgRegionCars = cv2.bitwise_and(img, car_mask)
 
@@ -119,8 +120,7 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, k:multiprocessing.Q
                     # Class name
                     cls = box.cls[0]
                     currClass = classNames[int(cls)]
-
-                    if (currClass == "car" or currClass == "truck" or currClass == "motorbike" or currClass == "bus" or currClass == "train"
+                    if (currClass == "car" or currClass == "truck" or currClass == "motorbike" or currClass == "bus"
                             and conf > 0.3):
                         cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
                         cvzone.putTextRect(img=img, text=f"{currClass} {conf}", pos=(max(0, x1), max(35, y1 - 20)),
