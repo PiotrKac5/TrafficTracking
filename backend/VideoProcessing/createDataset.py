@@ -17,7 +17,7 @@ def create(q:multiprocessing.Queue):
     while q.empty():
         time.sleep(1)
     ID = q.get()
-    img_id = 151231 # next start with 95000
+    img_id = 0
 
     while True:
         path = f"curr_vid/v{ID}.ts"
@@ -27,7 +27,7 @@ def create(q:multiprocessing.Queue):
 
         cap = cv2.VideoCapture(path)
 
-        while img_id < 200000:
+        while img_id < 250000:
             success, img = cap.read()
             if not success:
                 break
@@ -46,7 +46,7 @@ def create(q:multiprocessing.Queue):
             write_img = cv2.imwrite(img_path, img)
 
             results = model(img, stream=True)
-            with open(f"CustomDataset/{which_set}/labels/label{img_id}.txt", mode="w") as f:
+            with open(f"CustomDataset/{which_set}/labels/img{img_id}.txt", mode="w") as f:
                 for r in results:
                     boxes = r.boxes
                     for box in boxes:
