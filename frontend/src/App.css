@@ -10,7 +10,7 @@
   justify-content: center;
   flex-direction: row;
   top: 0;
-  background-color: #2F3061;
+  background-color: #284B63;
   gap: 40px;
   padding: 15px;
   position: relative;
@@ -18,12 +18,12 @@
 }
 
 .navbar .nav-button {
-  background-color: #0E34A0;
+  background-color: #D9D9D9;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  color: #DFDFDF;
+  color: #353535;
   border: none;
   border-radius: 10px;
   width: 100px;
@@ -36,16 +36,16 @@
 
 .nav-button:hover {
   background-color: #DFDFDF;
-  color: #343434;
+  color: #353535;
 }
 
 .expandable-button-container .main-button{
-  background-color: #0E34A0;
+  background-color: #D9D9D9;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  color: #DFDFDF;
+  color: #353535;
   border: none;
   border-radius: 10px;
   width: 100px;
@@ -58,7 +58,7 @@
 
 .expandable-button-container .main-button:hover {
   background-color: #DFDFDF;
-  color: #343434;
+  color: #353535;
 }
 
 .expandable-button-container{
@@ -86,8 +86,8 @@
   justify-content: center;
   width: 100px;
   height: 40px;
-  background-color: #0E34A0;
-  color: #DFDFDF;
+  background-color: #D9D9D9;
+  color: #353535;
   border: solid 1px #343434;
   border-radius: 5px;
   cursor: pointer;

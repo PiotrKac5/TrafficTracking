@@ -102,9 +102,11 @@ def handle_disconnect():
 
 @app.route('/plots/<duration>', methods=['GET'])
 def plot(duration):
+    print(f"Received duration: {duration}")
     # Generate a plot
-    fig, ax = plt.subplots()
-    ax.plot([1, 2, 3, 4, 5], [10, 20, 25, 30, 32])
+    fig, ax = generate_plots(duration=duration)
+    # fig, ax = plt.subplots()
+    # ax.plot([1, 2, 3, 4, 5], [10, 20, 25, 30, 32])
     ax.set(xlabel='x-axis', ylabel='y-axis', title='Sample Plot')
 
     # Save plot to a bytes buffer
@@ -124,6 +126,7 @@ if __name__ == '__main__':
         thread.daemon = True
         thread.start()
 
-        socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+        # socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+        socketio.run(app, host='localhost', port=5000, debug=True)
     finally:
         restore_timer_resolution()

@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 const Plots = () => {
   const [plotUrl, setPlotUrl] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const {duration} = useParams()
 
   useEffect(() => {
     // Fetch the plot image from the backend
     const fetchPlot = async () => {
       try {
-        const response = await fetch('http://localhost:5000/plots');
+        const response = await fetch(`http://localhost:5000/plots/${duration}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -25,7 +27,7 @@ const Plots = () => {
     };
 
     fetchPlot();
-  }, []);
+  }, [duration]);
 
   if (loading) {
     return <p>Loading plot...</p>;
@@ -37,7 +39,6 @@ const Plots = () => {
 
   return (
     <div>
-      <h1>Matplotlib Plot</h1>
       {plotUrl && <img src={plotUrl} alt="Matplotlib Plot" />}
     </div>
   );

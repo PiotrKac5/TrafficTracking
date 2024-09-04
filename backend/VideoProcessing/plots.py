@@ -8,7 +8,7 @@ def generate_plots(duration='Yesterday'):
     curr_datetime = datetime.now().date()
     today = curr_datetime.strftime("%d/%m/%Y")
 
-    df = pd.read_csv("sample_cars_data.csv")
+    df = pd.read_csv("VideoProcessing/sample_cars_data.csv")
     df['date'] = pd.to_datetime(df['date'], format="%d/%m/%Y").dt.date
 
     df = df[(df['date'] < curr_datetime)]
@@ -42,4 +42,4 @@ def generate_plots(duration='Yesterday'):
 
 
 
-generate_plots('One Week')
+# generate_plots('One Week')
