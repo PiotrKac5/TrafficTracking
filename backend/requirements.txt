@@ -1,0 +1,23 @@
+cvzone==1.6.1
+eventlet==0.36.1
+filterpy==1.4.5
+Flask==3.0.3
+Flask_Cors==4.0.1
+Flask_SocketIO==5.3.6
+lap==0.4.0
+m3u8==6.0.0
+matplotlib==3.9.2
+moviepy==1.0.3
+numpy==2.1.1
+opencv_python==4.10.0.84
+pandas==2.2.2
+redis==5.0.8
+Requests==2.32.3
+scipy==1.14.1
+skimage==0.0
+ultralytics==8.2.81
+wres==1.0.3
+torch>=2.0.1+cu117
+torchvision>=0.15.2+cu117
+torchaudio>=2.0.2+cu117
+-f https://download.pytorch.org/whl/cu117
