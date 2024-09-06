@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import './Plots.css'
 
 const Plots = () => {
   const [plotUrl, setPlotUrl] = useState('');
@@ -38,7 +39,7 @@ const Plots = () => {
   }
 
   return (
-    <div>
+    <div className="plot">
       {plotUrl && <img src={plotUrl} alt="Matplotlib Plot" />}
     </div>
   );

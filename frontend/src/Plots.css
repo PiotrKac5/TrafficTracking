@@ -1,20 +1,8 @@
-/* src/Plots.css */
-.plots-container {
+.plot{
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  min-height: 100vh; /* This makes the container take up the full height of the viewport */
-}
-
-.plots-container h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-.plots-container img {
-  max-width: 80%;
-  height: auto;
-  margin-bottom: 20px;
+  min-height: 90vh; /* This makes the container take up the full height of the viewport */
 }

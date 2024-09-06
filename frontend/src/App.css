@@ -35,7 +35,7 @@
 }
 
 .nav-button:hover {
-  background-color: #DFDFDF;
+  background-color: #CCCCCC;
   color: #353535;
 }
 
@@ -57,7 +57,7 @@
 }
 
 .expandable-button-container .main-button:hover {
-  background-color: #DFDFDF;
+  background-color: #CCCCCC;
   color: #353535;
 }
 
@@ -101,7 +101,7 @@
 }
 
 .additional-buttons .additional-button:hover {
-  background-color: #DFDFDF;
+  background-color: #CCCCCC;
   color: #343434;
 }
 
