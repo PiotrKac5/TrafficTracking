@@ -1,0 +1,13 @@
+.about-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 60vh;
+    width: 100vh;
+    padding: 40px;
+    font-family: Arial, sans-serif;
+    font-size: large;
+    text-align: justify;
+    color: #D9D9D9;
+}
