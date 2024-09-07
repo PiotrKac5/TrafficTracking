@@ -5,3 +5,5 @@
 *.jpg
 *.yaml
 *.png
+*.ipynb
+#ipynb added, so git does not detect edited jupyter notebook after restarting kernel and clearing output
