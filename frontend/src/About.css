@@ -1,5 +1,10 @@
 .about-page {
     display: flex;
+}
+
+.description{
+    position: relative;
+    display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -10,4 +15,8 @@
     font-size: large;
     text-align: justify;
     color: #D9D9D9;
+}
+
+.sample_video{
+    width: 50%;
 }

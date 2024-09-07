@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import './App.css';  // Ensure you have this file
+import './App.css';
 import { useNavigate } from 'react-router-dom';
 
 function ExpandableButton() {
@@ -21,7 +21,6 @@ function ExpandableButton() {
 
 
   const handleButtonClick = (duration) => {
-      // window.location.href = 'https://www.youtube.com';
       navigate('/');
       window.location.href = `plots/${duration}`;
   };

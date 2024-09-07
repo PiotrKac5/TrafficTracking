@@ -6,7 +6,8 @@ import reportWebVitals from './reportWebVitals';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Plots from "./Plots";
 import Show from "./Vidshow";
-import About from "./About"
+// import SampleVid from "./SampleVid";
+import About from "./About";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
