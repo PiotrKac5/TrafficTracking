@@ -1,3 +1,5 @@
+import eventlet
+eventlet.monkey_patch()
 import io
 import threading
 from queue import Queue
@@ -56,7 +58,6 @@ CORS(app)
 q = Queue() # queue for frames
 
 
-# @lru_cache(maxsize=None)
 def redis_listener():
     pubsub = r.pubsub()
     pubsub.subscribe('video')
@@ -84,7 +85,7 @@ def handle_frame_request():
     start_time = round(time.time() * 1000.0)
     frame_counter = 0
     for frame in generate_frames():
-        if frame_counter == 0:
+        if frame_counter == 1:
             start_time = round(time.time() * 1000.0)
         frame_counter += 1
         socketio.emit('new_frame', frame)
@@ -95,6 +96,7 @@ def handle_frame_request():
         else:
             wait_time = frame_counter * 40 - (c_time-start_time)
             socketio.sleep(wait_time/1000.0)
+        frame_counter %= 1000
 
 @socketio.on('disconnect')
 def handle_disconnect():
@@ -105,10 +107,7 @@ def plot(duration):
     print(f"Received duration: {duration}")
     # Generate a plot
     fig, ax = generate_plots(duration=duration)
-    # fig, ax = plt.subplots()
-    # ax.plot([1, 2, 3, 4, 5], [10, 20, 25, 30, 32])
-    ax.set(xlabel='x-axis', ylabel='y-axis', title='Sample Plot')
-
+    ax.set_title('Tracking stats', fontsize=20, fontweight='bold', color='#D9D9D9')
     # Save plot to a bytes buffer
     buf = io.BytesIO()
     fig.savefig(buf, format='png')

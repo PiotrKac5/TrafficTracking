@@ -13,28 +13,37 @@ def generate_plots(duration='Yesterday'):
 
     df = df[(df['date'] < curr_datetime)]
 
-    fig, ax = plt.subplots(figsize=(12, 6))
+    plt.style.use('seaborn-v0_8-darkgrid')
+    fig, ax = plt.subplots(figsize=(16, 8))
+
+    fig.set_facecolor('#353535')
+    ax.set_facecolor('#353535')
+    ax.grid(True, color='#D9D9D9', linestyle='--', linewidth=0.7)
+    ax.set_ylabel('Number of vehicles', color='#D9D9D9', fontsize=12)
+    ax.tick_params(axis='both', labelcolor='#D9D9D9', color='#D9D9D9')
+    # ax.tick_params(axis='y', color='#D9D9D9')
+
 
     if duration == 'Yesterday':
         yesterday = datetime.now().date() - timedelta(days=1)
         df = df[df['date'] == yesterday]
-        ax.plot(df['time'], df['vehicles'])
+        ax.plot(df['time'], df['vehicles'], color='#FFA500')
         ax.xaxis.set_major_locator(ticker.MultipleLocator(12))
     elif duration == 'One Week':
         one_week = datetime.now().date() - timedelta(days=8)
         df = df[df['date'] >= one_week]
-        df = df.groupby('date').agg({'vehicles':'mean'}).reset_index()
+        df = df.groupby('date').agg({'vehicles':'sum'}).reset_index()
 
-        ax.plot(df['date'], df['vehicles'])
-        ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
+        ax.plot(df['date'], df['vehicles'], color='#FFA500')
+        # ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
+
     else:
         one_month = datetime.now().date() - timedelta(days=31)
         df = df[df['date'] >= one_month]
-        ax.plot(df['date'], df['vehicles'])
-        df = df.groupby('date').agg({'vehicles': 'mean'}).reset_index()
+        df = df.groupby('date').agg({'vehicles': 'sum'}).reset_index()
 
-        ax.plot(df['date'], df['vehicles'])
-        ax.xaxis.set_major_locator(ticker.MultipleLocator(7))
+        ax.plot(df['date'], df['vehicles'], color='#FFA500')
+        # ax.xaxis.set_major_locator(ticker.MultipleLocator(7))
 
     # plt.show()
 
