@@ -19,7 +19,18 @@ const About = () => {
 
   return (
     <div className="about-page">
-      <ReactMarkdown className="description">{markdown}</ReactMarkdown>
+      <div className="description">
+        <ReactMarkdown
+          children={markdown}
+          components={{
+            a: ({ node, ...props }) => (
+              <a {...props} className="custom-link">
+                {props.children}
+              </a>
+            ),
+          }}
+        />
+      </div>
       <SampleVid className="sample_video"/>
     </div>
   );

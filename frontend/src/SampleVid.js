@@ -30,6 +30,7 @@ const SampleVid = () => {
 
   return (
     <div className="video-container">
+      <h1>Sample Video</h1>
       <video
         className="sample_video"
         autoPlay
@@ -41,7 +42,7 @@ const SampleVid = () => {
         <source src={isClicked ? "/videos/sample_with_mask.mp4" : "/videos/sample_without_mask.mp4"} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
-      <button className="adding mask" onClick={handleButtonClick}>
+      <button className="adding-mask" onClick={handleButtonClick}>
         {isClicked ? 'Remove mask' : 'Add mask'}
       </button>
     </div>

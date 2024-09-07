@@ -10,13 +10,13 @@
     flex-direction: column;
     height: 60vh;
     width: 100vh;
-    padding: 40px;
+    padding: 30px;
     font-family: Arial, sans-serif;
     font-size: large;
     text-align: justify;
     color: #D9D9D9;
 }
 
-.sample_video{
-    width: 50%;
+.custom-link{
+    color: #FFA500;
 }
