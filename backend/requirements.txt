@@ -1,3 +1,4 @@
+seaborn==0.13.2
 cvzone==1.6.1
 eventlet==0.36.1
 filterpy==1.4.5
