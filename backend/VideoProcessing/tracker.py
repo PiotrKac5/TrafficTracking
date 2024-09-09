@@ -57,7 +57,7 @@ def check_crossing(limits, cx: int, cy: int) -> (bool, int):
     return False, None
 
 
-def track(q: multiprocessing.Queue, p:multiprocessing.Queue, k:multiprocessing.Queue, path: str="curr_vid/v0.ts") -> None:
+def track(q: multiprocessing.Queue, p:multiprocessing.Queue, k:multiprocessing.Queue, path: str="curr_vid/v0.mp4") -> None:
     """
     Reads mp4 files, detects objects in each frame in certain regions (not covered by mask) and shows result of it.
     It also counts all objects that are crossing segments defined in "limits" and shows it on screen.
@@ -87,10 +87,10 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, k:multiprocessing.Q
     q.put(totalCount)
 
     while True:
-        curr_path = path[:-4] + str(ID) + path[-3:]
+        curr_path = path[:10] + str(ID) + path[-4:]
 
         while not os.path.exists(curr_path):
-            time.sleep(1)
+            time.sleep(0.001)
 
         cap = cv2.VideoCapture(curr_path)
 
@@ -163,8 +163,7 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, k:multiprocessing.Q
         print(f"Cars counted: {len(totalCount)}")
 
         ID += 1
-        if ID == 100:
-            ID = 0
+        ID %= 100
 
 if __name__ == "__main__": # added if you want to test only tracker and publisher without running whole app
     q = multiprocessing.Manager().Queue()

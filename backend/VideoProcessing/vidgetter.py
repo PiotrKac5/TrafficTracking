@@ -1,4 +1,5 @@
 import multiprocessing
+import subprocess
 import time
 import requests
 import os
@@ -42,6 +43,9 @@ def get_videos(start_id:int=0) -> None:
         with open(f"curr_vid/v{i}.ts", 'wb') as f:
             r = requests.get(url, headers=headers)
             f.write(r.content)
+
+        subprocess.run(['ffmpeg', '-i', f"curr_vid/v{i}.ts", '-c', 'copy', f"curr_vid/v{i}.mp4"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT, shell=True)
+        os.remove(f"curr_vid/v{i}.ts")
 
         print(f"Ts file {i} converted")
 
