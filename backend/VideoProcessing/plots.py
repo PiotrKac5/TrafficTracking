@@ -5,6 +5,11 @@ from matplotlib import ticker
 
 
 def generate_plots(duration='Yesterday'):
+    """
+    Generates plots based on data.csv file
+    :param duration: Sets time range from data.csv file
+    :return: plot in format fig, ax
+    """
     curr_datetime = datetime.now().date()
     today = curr_datetime.strftime("%d/%m/%Y")
 
@@ -29,7 +34,7 @@ def generate_plots(duration='Yesterday'):
         df = df[df['date'] == yesterday]
         ax.plot(df['time'], df['vehicles'], color='#FFA500')
         ax.xaxis.set_major_locator(ticker.MultipleLocator(12))
-    elif duration == 'One Week':
+    elif duration == 'OneWeek':
         one_week = datetime.now().date() - timedelta(days=8)
         df = df[df['date'] >= one_week]
         df = df.groupby('date').agg({'vehicles':'sum'}).reset_index()
@@ -48,7 +53,3 @@ def generate_plots(duration='Yesterday'):
     # plt.show()
 
     return fig, ax
-
-
-
-# generate_plots('One Week')
