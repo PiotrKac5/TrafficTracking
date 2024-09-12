@@ -1,5 +1,7 @@
 import multiprocessing
 import os
+import time
+
 from vidgetter import get_starting_point
 import wres
 from ultralytics import YOLO
@@ -88,15 +90,19 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, k:multiprocessing.Q
 
     while True:
         curr_path = path[:10] + str(ID) + path[-4:]
+        check_path = path[:10] + str(ID) + ".txt"
 
-        while not os.path.exists(curr_path):
+        while not os.path.exists(check_path):
             time.sleep(0.001)
 
         cap = cv2.VideoCapture(curr_path)
 
-        path_to_remove = path[:-4] + str((ID-1)%100) + path[-3:]
+        path_to_remove = path[:10] + str((ID-1)%100) + path[-4:]
+        cpath_to_remove = path[:10] + str((ID-1)%100) + ".txt"
         if os.path.exists(path_to_remove):
             os.remove(path_to_remove)
+        if os.path.exists(cpath_to_remove):
+            os.remove(cpath_to_remove)
 
         while True:
             with wres.set_resolution(10000): # ensures precision of 1ms on Windows system
