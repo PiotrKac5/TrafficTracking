@@ -40,12 +40,18 @@ def get_videos(start_id:int=0) -> None:
         url += x
         url += ".ts"
 
-        with open(f"curr_vid/v{i}.ts", 'wb') as f:
+        ts_path = f"curr_vid/v{i}.ts"
+        mp4_path = f"curr_vid/v{i}.mp4"
+
+        with open(ts_path, 'wb') as f:
             r = requests.get(url, headers=headers)
             f.write(r.content)
 
-        subprocess.run(['ffmpeg', '-i', f"curr_vid/v{i}.ts", '-c', 'copy', f"curr_vid/v{i}.mp4"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT, shell=True)
-        os.remove(f"curr_vid/v{i}.ts")
+        subprocess.run(['ffmpeg', '-y', '-i', ts_path, '-c', 'copy', mp4_path], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT, shell=True)
+        os.remove(ts_path)
+
+        with open(f"curr_vid/v{i}.txt", 'a') as f: #to show to other process running in parallel that mp4 file is ready
+            f.write("File ready")
 
         print(f"Ts file {i} converted")
 
@@ -83,27 +89,21 @@ def getting_live_videos(q:multiprocessing.Queue) -> None:
     Ensures downloading, converting and connecting live-time video without any loss.
     """
 
-    last_download_time = time.time()
     start_id = get_starting_point()
     q.put(start_id)
 
-    ID = 0
-
+    last_download_time = time.time() - 50 * 2.2
     while True:
-        # if os.path.exists(f"videos_to_detect/video{ID}.mp4"):
-        #     os.remove(f"videos_to_detect/video{ID}.mp4")
-
-        last_download_time = time.time()
+        last_download_time += 50 * 2.2
         get_videos(start_id=start_id)
 
         curr_time = time.time()
-        if curr_time < last_download_time + 50 * 2.2:
-            time.sleep(last_download_time + 50 * 2.2 - curr_time)
+        if curr_time < last_download_time + 47 * 2.2: # to ensure non-stop video
+            time.sleep(last_download_time + 47 * 2.2 - curr_time)
 
         start_id += 50
         start_id %= 100
 
-        ID += 1
-        if ID == 100:
-            ID = 0
-            # break # uncomment only when you do not want program to run endlessly
+if __name__ == '__main__':
+    q = multiprocessing.Manager().Queue()
+    getting_live_videos(q)
