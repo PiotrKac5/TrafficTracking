@@ -18,6 +18,7 @@ const Plots = () => {
         }
         const imageBlob = await response.blob();
         const imageUrl = URL.createObjectURL(imageBlob);
+        console.log("It seems to work---------------------------------------")
         setPlotUrl(imageUrl);
         setLoading(false);
       } catch (error) {
