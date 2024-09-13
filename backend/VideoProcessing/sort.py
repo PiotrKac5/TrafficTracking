@@ -18,12 +18,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import print_function
-
+import platform
 import os
 import numpy as np
 import matplotlib
 
-matplotlib.use('TkAgg')
+if platform.system() == "Windows":
+    matplotlib.use('TkAgg')
+else:
+    matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from skimage import io

@@ -1,9 +1,7 @@
 import multiprocessing
 import os
 import time
-
-from vidgetter import get_starting_point
-import wres
+# import wres # uncomment if launching app on windows
 from ultralytics import YOLO
 import cv2
 import cvzone
@@ -105,8 +103,8 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, k:multiprocessing.Q
             os.remove(cpath_to_remove)
 
         while True:
-            with wres.set_resolution(10000): # ensures precision of 1ms on Windows system
-                det_time = round(time.time() * 1000.0)
+            # with wres.set_resolution(10000): # ensures precision of 1ms on Windows system
+            #     det_time = round(time.time() * 1000.0)
             success, img = cap.read()
             if not success:
                 break
@@ -162,9 +160,11 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, k:multiprocessing.Q
             p.put(img)
 
             q.put(totalCount)
-            with wres.set_resolution(10000): # ensures precision of 1ms on Windows system
-                c_time = round(time.time() * 1000.0)
-                # cv2.waitKey(max(1, (40-(c_time-det_time))))
+            # uncomment this if u want to have image shown in separate window and you are on windows system
+            # and uncomment same thing on line 108
+            # with wres.set_resolution(10000): # ensures precision of 1ms on Windows system
+            #     c_time = round(time.time() * 1000.0)
+            #     cv2.waitKey(max(1, (40-(c_time-det_time))))
 
         print(f"Cars counted: {len(totalCount)}")
 

@@ -1,4 +1,5 @@
 import multiprocessing
+import platform
 import subprocess
 import time
 import requests
@@ -47,7 +48,10 @@ def get_videos(start_id:int=0) -> None:
             r = requests.get(url, headers=headers)
             f.write(r.content)
 
-        subprocess.run(['ffmpeg', '-y', '-i', ts_path, '-c', 'copy', mp4_path], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT, shell=True)
+        if platform.system() == "Windows":
+            subprocess.run(['ffmpeg', '-y', '-i', ts_path, '-c', 'copy', mp4_path], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT, shell=True)
+        else:
+            subprocess.run(['ffmpeg', '-y', '-i', ts_path, '-c', 'copy', mp4_path])
         os.remove(ts_path)
 
         with open(f"curr_vid/v{i}.txt", 'a') as f: #to show to other process running in parallel that mp4 file is ready

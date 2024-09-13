@@ -3,7 +3,8 @@ import multiprocessing
 import cv2
 import redis
 
-r = redis.Redis(host='localhost', port=6379, db=0)
+r = redis.Redis(host='redis', port=6379, db=0)
+# r = redis.Redis(host='localhost', port=6379, db=0)
 
 def publish_to_redis(q: multiprocessing.Queue):
     while True:
