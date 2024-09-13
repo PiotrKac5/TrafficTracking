@@ -5,6 +5,7 @@ seaborn
 cvzone
 eventlet
 filterpy
+ffmpeg
 Flask==3.0.3
 Flask_Cors==4.0.1
 Flask_SocketIO==5.3.6
