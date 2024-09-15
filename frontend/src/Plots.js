@@ -12,7 +12,7 @@ const Plots = () => {
     // Fetch the plot image from the backend
     const fetchPlot = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/plots/${duration}`);
+        const response = await fetch(`/plotting/${duration}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

@@ -3,6 +3,7 @@ import io from 'socket.io-client';
 import './Vidshow.css'
 
 const socket = io('/');
+
 // const socket = io('http://localhost:5000');
 
 function Show() {
