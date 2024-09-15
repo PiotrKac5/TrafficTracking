@@ -6,7 +6,7 @@ from queue import Queue
 from VideoProcessing.plots import generate_plots
 import cv2
 import redis
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_file, request
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
 import ctypes
@@ -61,7 +61,7 @@ def redis_listener():
 
     for message in pubsub.listen():
         if message and message['type'] == 'message': # Check if it is an actual message
-            frame =  message['data'].decode('utf-8')
+            frame = message['data'].decode('utf-8')
             q.put(frame)
 
 
@@ -72,35 +72,43 @@ def generate_frames():
         frame = q.get()
         yield frame
 
+# Store connection status per client
+connected_clients = {}
 
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
+    connected_clients[request.sid] = True
 
 @socketio.on('request_frame')
 def handle_frame_request():
     start_time = round(time.time() * 1000.0)
-    frame_counter = 0
-    for frame in generate_frames():
-        if frame_counter == 1:
-            start_time = round(time.time() * 1000.0)
-        frame_counter += 1
-        socketio.emit('new_frame', frame)
-        if platform.system() == "Widnows":
-            with wres.set_resolution(10000):  # ensures precision of 1ms on Windows system
+
+    while connected_clients.get(request.sid, False):
+        frame_counter = 0
+        for frame in generate_frames():
+            if frame_counter == 1:
+                start_time = round(time.time() * 1000.0)
+            frame_counter += 1
+            socketio.emit('new_frame', frame)
+            if platform.system() == "Widnows":
+                with wres.set_resolution(10000):  # ensures precision of 1ms on Windows system
+                    c_time = round(time.time() * 1000.0)
+            else:
                 c_time = round(time.time() * 1000.0)
-        else:
-            c_time = round(time.time() * 1000.0)
-        if c_time-start_time > frame_counter * 40:
-            socketio.sleep(0)
-        else:
-            wait_time = frame_counter * 40 - (c_time-start_time)
-            socketio.sleep(wait_time/1000.0)
-        frame_counter %= 100
+            if c_time-start_time > frame_counter * 40:
+                socketio.sleep(0)
+            else:
+                wait_time = frame_counter * 40 - (c_time-start_time)
+                socketio.sleep(wait_time/1000.0)
+            frame_counter %= 1000
+            if not connected_clients.get(request.sid, True):
+                break
 
 @socketio.on('disconnect')
 def handle_disconnect():
     print('Client disconnected')
+    connected_clients[request.sid] = False
 
 @app.route('/plots/<duration>', methods=['GET'])
 def plot(duration):
