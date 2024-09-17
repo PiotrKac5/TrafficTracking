@@ -59,13 +59,13 @@ function Navbar() {
 
   return (
     <div className="navbar">
-      <button className="nav-button" onClick={() => navigate('/')}>
-        Home
-      </button>
       <ExpandableButton>
-        Plots
+          Plots
       </ExpandableButton>
-      <button className="nav-button" onClick={() => navigate('/about')}>
+        <button className="nav-button-main" onClick={() => navigate('/')}>
+            Live Tracking
+        </button>
+        <button className="nav-button-add" onClick={() => navigate('/about')}>
         About
       </button>
     </div>

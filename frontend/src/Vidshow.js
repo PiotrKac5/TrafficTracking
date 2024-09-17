@@ -34,7 +34,7 @@ function Show() {
     return (
         <div className="main-content">
             <header className="App-header">
-                <h1>Live Tracking</h1>
+                {/*<h1>Live Tracking</h1>*/}
                 {frame && <img src={frame} alt="Video Stream" style={{maxWidth: '100%', height: 'auto'}}/>}
             </header>
         </div>

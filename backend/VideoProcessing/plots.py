@@ -21,12 +21,12 @@ def generate_plots(duration='Yesterday'):
     plt.style.use('seaborn-v0_8-darkgrid')
     fig, ax = plt.subplots(figsize=(16, 8))
 
-    fig.set_facecolor('#353535')
-    ax.set_facecolor('#353535')
-    ax.grid(True, color='#D9D9D9', linestyle='--', linewidth=0.7)
-    ax.set_ylabel('Number of vehicles', color='#D9D9D9', fontsize=12)
-    ax.tick_params(axis='both', labelcolor='#D9D9D9', color='#D9D9D9')
-    # ax.tick_params(axis='y', color='#D9D9D9')
+    fig.set_facecolor('#1F1F1F')
+    ax.set_facecolor('#1F1F1F')
+    ax.grid(True, color='#FFFFFF', linestyle='--', linewidth=0.7)
+    ax.set_ylabel('Number of vehicles', color='#FFFFFF', fontsize=12)
+    ax.tick_params(axis='both', labelcolor='#FFFFFF', color='#FFFFFF')
+    # ax.tick_params(axis='y', color='#FFFFFF')
 
 
     if duration == 'Yesterday':
