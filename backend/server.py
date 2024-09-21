@@ -15,35 +15,6 @@ import platform
 from matplotlib import pyplot as plt
 
 
-def set_timer_resolution(period_ms):
-    """
-    Set the system timer resolution.
-    :param period_ms: Timer period in milliseconds.
-    """
-    winmm = ctypes.WinDLL('winmm')
-    # Define the timeBeginPeriod function
-    timeBeginPeriod = winmm.timeBeginPeriod
-    timeBeginPeriod.argtypes = [ctypes.c_uint]
-    timeBeginPeriod.restype = ctypes.c_uint
-    if period_ms < 1:
-        raise ValueError("Period must be at least 1 millisecond")
-
-    timeBeginPeriod(period_ms)
-
-
-def restore_timer_resolution():
-    """
-    Restore the default system timer resolution.
-    """
-    winmm = ctypes.WinDLL('winmm')
-    # Define the timeEndPeriod function
-    timeEndPeriod = winmm.timeEndPeriod
-    timeEndPeriod.argtypes = [ctypes.c_uint]
-    timeEndPeriod.restype = ctypes.c_uint
-    # Typically, 15 ms is the default period on many systems.
-    timeEndPeriod(15)
-
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -72,43 +43,20 @@ def generate_frames():
         frame = q.get()
         yield frame
 
-# Store connection status per client
-connected_clients = {}
 
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
-    connected_clients[request.sid] = True
 
 @socketio.on('request_frame')
 def handle_frame_request():
-    start_time = round(time.time() * 1000.0)
-
-    while connected_clients.get(request.sid, False):
-        frame_counter = 0
-        for frame in generate_frames():
-            if frame_counter == 1:
-                start_time = round(time.time() * 1000.0)
-            frame_counter += 1
-            socketio.emit('new_frame', frame)
-            if platform.system() == "Widnows":
-                with wres.set_resolution(10000):  # ensures precision of 1ms on Windows system
-                    c_time = round(time.time() * 1000.0)
-            else:
-                c_time = round(time.time() * 1000.0)
-            if c_time-start_time > frame_counter * 40:
-                socketio.sleep(0)
-            else:
-                wait_time = frame_counter * 40 - (c_time-start_time)
-                socketio.sleep(wait_time/1000.0)
-            frame_counter %= 1000
-            if not connected_clients.get(request.sid, True):
-                break
+    for frame in generate_frames():
+        socketio.emit('new_frame', frame)
+        socketio.sleep(0)
 
 @socketio.on('disconnect')
 def handle_disconnect():
     print('Client disconnected')
-    connected_clients[request.sid] = False
 
 @app.route('/plots/<duration>', methods=['GET'])
 def plot(duration):
@@ -127,15 +75,9 @@ def plot(duration):
 
 
 if __name__ == '__main__':
-    if platform.system() == "Windows":
-        import wres
-        set_timer_resolution(1)
-    try:
-        thread = threading.Thread(target=redis_listener)
-        thread.daemon = True
-        thread.start()
+    thread = threading.Thread(target=redis_listener)
+    thread.daemon = True
+    thread.start()
 
-        socketio.run(app, host='0.0.0.0', port=5000, debug=False)
-        # socketio.run(app, host='localhost', port=5000, debug=True)
-    finally:
-        restore_timer_resolution()
+    socketio.run(app, host='0.0.0.0', port=5000, debug=False)
+    # socketio.run(app, host='localhost', port=5000, debug=True)

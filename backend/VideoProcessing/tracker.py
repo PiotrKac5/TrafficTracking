@@ -76,7 +76,7 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, k:multiprocessing.Q
     classNames = model.names
 
     tracker = Sort(max_age=1000, min_hits=3,
-                   iou_threshold=0.3)  # max_age is so large, because in case of traffic cars will be moving slowly
+                   iou_threshold=0.2)  # max_age is so large, because in case of traffic cars will be moving slowly
 
     car_mask = cv2.imread("masks/car_mask.png")
 
@@ -124,7 +124,7 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, k:multiprocessing.Q
                     # Class name
                     cls = box.cls[0]
                     currClass = classNames[int(cls)]
-                    if (currClass == "car" or currClass == "truck" or currClass == "motorbike" or currClass == "bus"
+                    if ((currClass == "car" or currClass == "truck" or currClass == "motorbike" or currClass == "bus")
                             and conf > 0.3):
                         cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
                         cvzone.putTextRect(img=img, text=f"{currClass} {conf}", pos=(max(0, x1), max(35, y1 - 20)),
