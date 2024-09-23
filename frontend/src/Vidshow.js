@@ -7,7 +7,7 @@ const socket = io('/'); // Connect to the server
 function Show() {
     const [frame, setFrame] = useState('');
     const [isReady, setIsReady] = useState(false); // State to track readiness
-    const [countdown, setCountdown] = useState(15); // Countdown timer for first connection
+    const [countdown, setCountdown] = useState(5); // Countdown timer for first connection
     const [isFirstConnection, setIsFirstConnection] = useState(false); // Track first-time connection
     const [showLoadingScreen, setShowLoadingScreen] = useState(true); // Show loading screen
 
@@ -19,6 +19,24 @@ function Show() {
     const readIndex = useRef(0); // Index for reading frames
 
     useEffect(() => {
+        socket.on('connect', () => {
+            console.log('Connected to server');
+            socket.emit('request_frame'); // Request the first frame
+        });
+
+        socket.on('new_frame', (data) => {
+            console.log('Getting data')
+            // Store the frame in the buffer at the current write index
+            frameBuffer.current[writeIndex.current] = data;
+
+            // Move the write index forward, wrap around if at the end
+            writeIndex.current = (writeIndex.current + 1) % bufferSize;
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Disconnected from server');
+        });
+
         // Check if this is the first connection
         const hasConnectedBefore = localStorage.getItem('hasConnectedBefore');
         if (!hasConnectedBefore) {
@@ -29,6 +47,7 @@ function Show() {
                     if (prevCountdown > 1) {
                         return prevCountdown - 1;
                     } else {
+                        // readIndex.current = (writeIndex.current - 15 * 25) % bufferSize
                         clearInterval(countdownInterval);
                         setIsReady(true);
                         setShowLoadingScreen(false);
@@ -42,43 +61,26 @@ function Show() {
             // Not the first connection: skip countdown
             setIsReady(true);
             setShowLoadingScreen(false);
+
         }
 
         let frameDisplayIntervalId; // For storing the interval ID
-
         // Function to display frames at 25 FPS
         const displayFrames = () => {
             if (!isReady) return; // Only display frames if ready
 
-            const currentFrame = frameBuffer.current[readIndex.current]; // Get the frame at the read index
 
+            const currentFrame = frameBuffer.current[readIndex.current]; // Get the frame at the read index
             if (currentFrame) {
                 setFrame(`data:image/jpeg;base64,${currentFrame}`);
                 // Move the read index forward, wrap around if at the end
                 readIndex.current = (readIndex.current + 1) % bufferSize;
             }
+
         };
-
         // Start frame display using setInterval to ensure it runs every 40ms
+
         frameDisplayIntervalId = setInterval(displayFrames, frameDisplayInterval);
-
-        // Socket events
-        socket.on('connect', () => {
-            console.log('Connected to server');
-            socket.emit('request_frame'); // Request the first frame
-        });
-
-        socket.on('new_frame', (data) => {
-            // Store the frame in the buffer at the current write index
-            frameBuffer.current[writeIndex.current] = data;
-
-            // Move the write index forward, wrap around if at the end
-            writeIndex.current = (writeIndex.current + 1) % bufferSize;
-        });
-
-        socket.on('disconnect', () => {
-            console.log('Disconnected from server');
-        });
 
         // Cleanup on unmount
         return () => {
@@ -91,6 +93,7 @@ function Show() {
 
     return (
         <div className="main-content">
+            <h1>Cracow - Zbigniewa Herberta - Trasa Łagiewnicka</h1>
             {showLoadingScreen ? (
                 // Show loading screen with countdown
                 <div className="loading-screen">
@@ -100,7 +103,7 @@ function Show() {
             ) : (
                 // Show the video stream once ready
                 <header className="App-header">
-                    {frame && <img src={frame} alt="Video Stream" style={{ maxWidth: '100%', height: 'auto' }} />}
+                    {frame && <img src={frame} alt="Video Stream" style={{ maxWidth: '100%', height: 'calc(100vh - 200px)' }} />}
                 </header>
             )}
         </div>
