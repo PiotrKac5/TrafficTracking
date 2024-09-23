@@ -80,8 +80,8 @@ def track(q: multiprocessing.Queue, p:multiprocessing.Queue, k:multiprocessing.Q
 
     car_mask = cv2.imread("masks/car_mask.png")
 
-    limits = [[20, 393, 126, 450], [341, 345, 501, 272], [410, 476, 666, 592], [693, 230, 871, 291],
-              [1027, 450, 1141, 298], [1150, 608, 1208, 703]]
+    limits = [[72, 378, 238, 373], [341, 345, 492, 276], [330, 495, 606, 615], [693, 230, 925, 276],
+              [1054, 461, 1141, 298], [1150, 608, 1208, 703]]
 
     totalCount = set()
     q.put(totalCount)
